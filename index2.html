@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <meta charset="UTF8" />
+    <title>hola mundo</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/custom.css">
+
+</head>
+
+<body>
+    <div class="content">
+        <h1>Hola web</h1>
+        <p>
+            Lorem ipsum porque es lo típico.
+        </p>
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-printers" role="tab"
+                    aria-controls="pills-printers" aria-selected="true">Impresoras</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-groups" role="tab"
+                    aria-controls="pills-groups" aria-selected="false">Grupos</a>
+            </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-printers" role="tabpanel" aria-labelledby="pills-printers-tab">
+                <div class="row">
+                    <div class="col">
+                        Gran lista de impresoras
+                        <div id="a">
+                            <ul>
+                                <li>uno</li>
+                                <li>dos</li>
+                                <li>tres</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        Detalles de elemento seleccionado
+                    </div>
+                    <div class="col">
+                        Acciones con elemento actual
+                        <form>
+                            <input type="file" />
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="pills-groups" role="tabpanel" aria-labelledby="pills-groups-tab">
+                <div class="row">
+                    <div id="b" class="col">
+                        Gran lista de grupos
+                        <ul>
+                            <li>uno</li>
+                            <li>dos</li>
+                            <li>tres</li>
+                        </ul>
+                    </div>
+                    <div class="col-6">
+                        Detalles de elemento seleccionado
+                    </div>
+                    <div class="col">
+                        Acciones con elemento actual
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- podría estar en fichero aparte -->
+    <script src="js/jquery-3.3.1.js"></script>
+    <script src="js/bootstrap.bundle.js"></script>
+    <script src="js/pmgr.js" type="module"></script>
+
+    <script>
+        function cambiaPorPatata(e) {
+            $(e.target).text("patata");
+        }
+// $("li").click(cambiaPorPatata); // (e) => $(e.target).text("patata"));
+    </script>
+    <!-- podría estar en fichero aparte -->
+
+    <style>
+        ul>li {
+            color: blue;
+        }
+    </style>
+</body>
+
+</html>
