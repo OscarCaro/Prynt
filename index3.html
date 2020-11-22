@@ -32,7 +32,7 @@
         }
     }
 
-    function insertarElementos(n) {
+    function insertarGrupos(n, b) {
         document.write(`
                     <div class="card">
                     <div class="row scroll-panel-derecho">
@@ -42,7 +42,14 @@
             document.write(`
                         <div class="col-3">
                             <div class="card">
-                                <h3>Grupo ${i+1}</h3>
+                                <div class="row">
+                                    <div class="col-9">
+                                    <h4>Grupo ${i + 1}</h4>
+                                    </div>
+                                    <div class="col"> 
+                                        <button class="btn ${b == "+" ? "btn-primary" : "btn-danger"}" type="submit">${b}</button> 
+                                    </div>
+                                </div>
                             </div>
                         </div>
             `);
@@ -53,6 +60,70 @@
                  </div>
         `);
     }
+
+    function insertarImpresoras(n) {
+        for (var i = 0; i < n; i++) {
+            document.write(`
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-10">
+                                MiArchivo${i + 1}.pdf
+                            </div>
+                            <div class="col">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-printer-fill"
+                                    fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
+                                    <path fill-rule="evenodd"
+                                        d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+                                    <path fill-rule="evenodd"
+                                        d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                                </svg> <!-- icono impresora -->
+                            </div>
+                        </div>
+                    </div>
+            `);
+        }
+    }
+
+    function insertarImpresorasGrupos(n, b) {
+        document.write(`
+                    <div class="card">
+                    <div class="row scroll-panel-derecho">
+        `);
+
+        for (var i = 0; i < n; i++) {
+            document.write(`
+                        <div class="col-3">
+                            <div class="card">
+                                <div class="row">
+                                    <div class="col-9">
+                                        
+                                            <h4>Impresora ${i + 1}</h4>
+                                        
+                                    </div>
+                                    <div class="col"> 
+                                        <button class="btn ${b == "+" ? "btn-primary" : "btn-danger"}" type="submit">${b}</button> 
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col">
+                                         Localización: Pepe
+                                         <br> ID: 2344
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+            `);
+        }
+
+        document.write(`
+                      </div>
+                 </div>
+        `);
+    }
+
 </script>
 
 <body>
@@ -61,11 +132,11 @@
         <!-- pestañas generales -->
         <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="pills-jobs-tab" data-toggle="pill" href="#pills-jobs" role="tab"
+                <a class="nav-link active" id="pills-jobs-tab" data-toggle="pill" href="#pills-jobs" role="tab"
                     aria-controls="pills-jobs" aria-selected="false">Cola de impresión</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="pills-printers-tab" data-toggle="pill" href="#pills-printers" role="tab"
+                <a class="nav-link" id="pills-printers-tab" data-toggle="pill" href="#pills-printers" role="tab"
                     aria-controls="pills-printers" aria-selected="true">Impresoras</a>
             </li>
             <li class="nav-item" role="presentation">
@@ -76,7 +147,7 @@
 
         <!-- cola de impresión -->
         <div class="tab-content" id="pills-tabContent">
-            <div class="tab-pane fade" id="pills-jobs" role="tabpanel" aria-labelledby="pills-jobs-tab">
+            <div class="tab-pane fade show active" id="pills-jobs" role="tabpanel" aria-labelledby="pills-jobs-tab">
                 <div class="row">
                     <!-- columna izquierda -->
                     <div class="col">
@@ -94,6 +165,12 @@
                             </nav>
                             <!-- lista de impresoras -->
                             <div class="container">
+                                <div class="col scroll-panel-impresoras">
+                                    <script>
+                                        insertarImpresoras(200);
+                                    </script>
+                                </div>
+                                <!--
                                 <div class="card">
                                     <div class="row">
                                         <div class="col-10">
@@ -107,10 +184,9 @@
                                                     d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
                                                 <path fill-rule="evenodd"
                                                     d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-                                            </svg> <!-- icono impresora -->
+                                            </svg> 
                                         </div>
                                     </div>
-
                                 </div>
                                 <div class="card">
                                     <div class="row">
@@ -125,7 +201,7 @@
                                                     d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
                                                 <path fill-rule="evenodd"
                                                     d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-                                            </svg> <!-- icono impresora -->
+                                            </svg> 
                                         </div>
                                     </div>
                                 </div>
@@ -142,10 +218,11 @@
                                                     d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
                                                 <path fill-rule="evenodd"
                                                     d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-                                            </svg> <!-- icono impresora -->
+                                            </svg> 
                                         </div>
                                     </div>
                                 </div>
+                            -->
                             </div>
                             <!-- botón inferior -->
                             <button class="btn btn-primary mt-auto" type="button">
@@ -213,7 +290,7 @@
             </div>
 
             <!-- impresoras -->
-            <div class="tab-pane fade show active" id="pills-printers" role="tabpanel"
+            <div class="tab-pane fade" id="pills-printers" role="tabpanel"
                 aria-labelledby="pills-printers-tab">
                 <div class="row">
                     <!-- columna izquierda -->
@@ -247,60 +324,75 @@
                                     </div>
 
                                     <div class="row-4">
-                                        incluida en grupos
+                                        <h3>Incluidas en grupos</h3>
                                         <script>
-                                           insertarElementos(10);
+                                            insertarGrupos(2, "X");
                                         </script>
 
                                     </div>
-                                <div class="row-4">
-                                    grupos a los que añadir
-                                    <script>
-                                        insertarElementos(30);
-                                    </script>
-                                   
-                                      
-                                      
+                                    <div class="row-4">
+                                        <h3>Grupos a los que añadir</h3>
+                                        <script>
+                                            insertarGrupos(28, "+");
+                                        </script>
+                                    </div>
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
 
-        <!-- grupos de impresoras -->
-        <div class="tab-pane fade" id="pills-groups" role="tabpanel" aria-labelledby="pills-groups-tab">
-            <div class="row">
-                <!-- columna izquierda -->
-                <div class="col">
-                    <div class="card h-100">
-                        <h2>Grupos</h2>
+            <!-- grupos de impresoras -->
+            <div class="tab-pane fade" id="pills-groups" role="tabpanel" aria-labelledby="pills-groups-tab">
+                <div class="row">
+                    <!-- columna izquierda -->
+                    <div class="col">
+                        <div class="card h-100">
+                            <h2>Grupos</h2>
 
-
-                    </div>
-                </div>
-                <!-- columna derecha -->
-                <div class="col-8">
-                    <div class="card">
-                        <div class="card-body">
-
-                            <h2>Grupo 1</h2>
 
                         </div>
                     </div>
+                    <!-- columna derecha -->
+                    <div class="col-8">
+                        <div class="card">
+                            <div class="card-body">
+
+                                <div class="col">
+                                    <div class="row-4">
+                                        <h2>
+                                            <!-- nombre de grupo -->
+                                            Grupo 1
+
+                                        </h2>
+                                    </div>
+
+                                    <div class="row-4">
+                                        <h3>Impresoras incluidas</h3>
+                                        <script>
+                                            insertarImpresorasGrupos(2, "X");
+                                        </script>
+
+                                    </div>
+                                    <div class="row-4">
+                                        <h3>Impresoras a añadir</h3>
+                                        <script>
+                                            insertarImpresorasGrupos(28, "+");
+                                        </script>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+
             </div>
+
+
+
         </div>
-
-    </div>
-
-
-
-    </div>
     </div>
 
     <!-- podría estar en fichero aparte -->

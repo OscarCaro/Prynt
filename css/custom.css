@@ -7,4 +7,11 @@
     position: relative;
     height: 200px;
     overflow: auto;
-    }
+}
+
+
+.scroll-panel-impresoras {
+    position: relative;
+    height: 600px;
+    overflow: auto;
+}
