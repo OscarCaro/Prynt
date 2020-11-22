@@ -2,3 +2,9 @@
 .msg {
     font-size: 60%;
 }
+
+.scroll-panel-derecho {
+    position: relative;
+    height: 200px;
+    overflow: auto;
+    }
