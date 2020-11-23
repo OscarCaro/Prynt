@@ -145,8 +145,9 @@
             </li>
         </ul>
 
-        <!-- cola de impresión -->
+
         <div class="tab-content" id="pills-tabContent">
+            <!-- cola de impresión -->
             <div class="tab-pane fade show active" id="pills-jobs" role="tabpanel" aria-labelledby="pills-jobs-tab">
                 <div class="row">
                     <!-- columna izquierda -->
@@ -296,8 +297,6 @@
                     <div class="col">
                         <div class="card h-100">
                             <h2>Impresoras</h2>
-
-
                         </div>
                     </div>
                     <!-- columna derecha -->
@@ -307,7 +306,7 @@
                                 <div class="col">
                                     <div class="row-4">
                                         <div class="row">
-                                            <div class="col-8">
+                                            <div class="col-9">
                                                 <h2>
                                                     <!-- nombre archivo -->
                                                     maricarmen
@@ -366,7 +365,7 @@
                                             <button class="btn btn-primary" type="submit">Filtrar</button>
                                         </div>
                                     </div>
-                                    
+
                                     <p></p>
 
                                     <div class="row-4">
@@ -389,7 +388,6 @@
                 </div>
             </div>
 
-
             <!-- grupos de impresoras -->
             <div class="tab-pane fade" id="pills-groups" role="tabpanel" aria-labelledby="pills-groups-tab">
                 <div class="row">
@@ -397,22 +395,63 @@
                     <div class="col">
                         <div class="card h-100">
                             <h2>Grupos</h2>
-
-
                         </div>
                     </div>
                     <!-- columna derecha -->
                     <div class="col-8">
                         <div class="card">
                             <div class="card-body">
-
                                 <div class="col">
                                     <div class="row-4">
-                                        <h2>
-                                            <!-- nombre de grupo -->
-                                            Grupo 1
+                                        <div class="row">
+                                            <div class="col-9">
+                                                <h2>
+                                                    <!-- nombre grupo -->
+                                                    grupo 1
 
-                                        </h2>
+                                                    <!-- icono editar -->
+                                                    <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                        class="bi bi-pencil-square" fill="currentColor"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                        <path fill-rule="evenodd"
+                                                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                                    </svg>
+                                                </h2>
+                                            </div>
+                                            <div class="col">
+                                                <p>
+                                                    <!-- boton eliminar grupo -->
+                                                    <br><button class="btn btn-primary" type="submit">Eliminar
+                                                        grupo</button>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <!-- barra de filtrado -->
+                                        <div class="row">
+                                            <div class="col-8">
+                                                <input class="form-control mr-sm-2" type="search" placeholder="Filtrar"
+                                                    aria-label="Search">
+                                            </div>
+                                            <div class="col">
+                                                <select class="browser-default custom-select">
+                                                    <option selected>Opciones de filtrado</option>
+                                                    <option value="1">Nombre</option>
+                                                    <option value="2">Localizacion</option>
+                                                    <option value="3">ID</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-2">
+                                                <button class="btn btn-primary" type="submit">Filtrar</button>
+                                            </div>
+                                        </div>
+                                        <p></p>
+
+                                        <!-- opciones añadidas de filtrado -->
+                                        <button type="button" class="btn btn-secondary btn-sm">Localización: Pepe X</button>
+                                        <button type="button" class="btn btn-secondary btn-sm">Grupo: Salón X</button>
+
                                     </div>
 
                                     <div class="row-4">
