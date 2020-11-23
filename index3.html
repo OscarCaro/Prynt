@@ -104,9 +104,31 @@
                                 </svg> <!-- icono impresora -->
                             </div>
                         </div>
+                        <div class="row">                            
+                            <div class="col">
+                                <button type="button" class="btn btn-secondary btn-sm">Salón</button>
+                            <button type="button" class="btn btn-secondary btn-sm">Grupo3</button>
+                            </div>
+                        </div>
+                    </div>
+            `);
+        }
+    }
+
+    function insertarGruposPanelIzquierdoGrupos(n) {
+        for (var i = 0; i < n; i++) {
+            document.write(`
+                    <div class="card">
                         <div class="row">
-                            <button type="button" class="btn btn-secondary btn-sm">Salón X</button>
-                            <button type="button" class="btn btn-secondary btn-sm">Grupo3  X</button>
+                            <div class="col">
+                                Grupo${i + 1}
+                            </div>                            
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <button type="button" class="btn btn-secondary btn-sm">Maricarmen</button>
+                                <button type="button" class="btn btn-secondary btn-sm">Impresora7</button>
+                            </div>                            
                         </div>
                     </div>
             `);
@@ -202,59 +224,6 @@
                                         insertarImpresorasPanelIzquierdoCola(200);
                                     </script>
                                 </div>
-                                <!--
-                                <div class="card">
-                                    <div class="row">
-                                        <div class="col-10">
-                                            MiArchivo.pdf
-                                        </div>
-                                        <div class="col">
-                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-printer-fill"
-                                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
-                                                <path fill-rule="evenodd"
-                                                    d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
-                                                <path fill-rule="evenodd"
-                                                    d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-                                            </svg> 
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="row">
-                                        <div class="col-10">
-                                            Biografía de Paca La Piraña.pdf
-                                        </div>
-                                        <div class="col">
-                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-printer-fill"
-                                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
-                                                <path fill-rule="evenodd"
-                                                    d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
-                                                <path fill-rule="evenodd"
-                                                    d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-                                            </svg> 
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card">
-                                    <div class="row">
-                                        <div class="col-10">
-                                            MiArchivo.pdf
-                                        </div>
-                                        <div class="col">
-                                            <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-printer-fill"
-                                                fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
-                                                <path fill-rule="evenodd"
-                                                    d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
-                                                <path fill-rule="evenodd"
-                                                    d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
-                                            </svg> 
-                                        </div>
-                                    </div>
-                                </div>
-                            -->
                             </div>
                             <!-- botón inferior -->
                             <button class="btn btn-primary mt-auto" type="button">
@@ -367,7 +336,7 @@
                             </div>
                             <!-- botón inferior -->
                             <button class="btn btn-primary mt-auto" type="button">
-                                Nueva Impresión
+                                Nueva Impresora
                             </button>
 
                         </div>
@@ -467,9 +436,32 @@
                     <!-- columna izquierda -->
                     <div class="col">
                         <div class="card h-100">
+
                             <div style="text-align:center">
                                 <h2>Grupos</h2>
                             </div>
+
+                            <!-- barra de busqueda -->
+                            <nav class="navbar">
+                                <form class="form-inline">
+                                    <input class="form-control mr-sm-2" type="search" placeholder="Grupo"
+                                        aria-label="Search">
+                                    <button class="btn btn-primary" type="submit">Buscar</button>
+                                </form>
+                            </nav>
+                            <!-- lista de impresoras -->
+                            <div class="container">
+                                <div class="col scroll-panel-impresoras">
+                                    <script>
+                                        insertarGruposPanelIzquierdoGrupos(200);
+                                    </script>
+                                </div>
+                            </div>
+                            <!-- botón inferior -->
+                            <button class="btn btn-primary mt-auto" type="button">
+                                Nuevo Grupo
+                            </button>
+
                         </div>
                     </div>
                     <!-- columna derecha -->
