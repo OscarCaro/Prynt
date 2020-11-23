@@ -140,7 +140,7 @@
                     <div class="card">
                     <div class="row scroll-panel-derecho">
         `);
-
+        var bE = `data-toggle="modal" data-target="#dialogoEliminarGrupo"`
         for (var i = 0; i < n; i++) {
             document.write(`
                         <div class="col-3">
@@ -152,7 +152,9 @@
                                         
                                     </div>
                                     <div class="col"> 
-                                        <button class="btn ${b == "+" ? "btn-primary" : "btn-danger"}" type="submit">${b}</button> 
+                                        <button class="btn ${b == "+" ? "btn-primary" : "btn-danger"}" type="button"
+                                                        data-toggle="modal" data-target="#dialogoEliminarImpresoraDeGrupo">${b}</button> 
+                                                        
                                     </div>
                                 </div>
 
@@ -179,14 +181,17 @@
 <body>
     <div class="content">
 
+        <div style="color:#007bff;font-family: Consolas;font-size: 50px;text-align:center">prynt</div>
+
+
         <!-- pestañas generales -->
         <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="pills-jobs-tab" data-toggle="pill" href="#pills-jobs" role="tab"
+                <a class="nav-link" id="pills-jobs-tab" data-toggle="pill" href="#pills-jobs" role="tab"
                     aria-controls="pills-jobs" aria-selected="false">Cola de impresión</a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="pills-printers-tab" data-toggle="pill" href="#pills-printers" role="tab"
+                <a class="nav-link active" id="pills-printers-tab" data-toggle="pill" href="#pills-printers" role="tab"
                     aria-controls="pills-printers" aria-selected="true">Impresoras</a>
             </li>
             <li class="nav-item" role="presentation">
@@ -198,7 +203,7 @@
 
         <div class="tab-content" id="pills-tabContent">
             <!-- cola de impresión -->
-            <div class="tab-pane fade show active" id="pills-jobs" role="tabpanel" aria-labelledby="pills-jobs-tab">
+            <div class="tab-pane fade" id="pills-jobs" role="tabpanel" aria-labelledby="pills-jobs-tab">
                 <div class="row">
                     <!-- columna izquierda -->
                     <div class="col">
@@ -219,16 +224,65 @@
                             </nav>
                             <!-- lista de impresoras -->
                             <div class="container">
-                                <div class="col scroll-panel-impresoras">
+                                <div class="col scroll-panel-cola">
                                     <script>
                                         insertarImpresorasPanelIzquierdoCola(200);
                                     </script>
                                 </div>
                             </div>
                             <!-- botón inferior -->
-                            <button class="btn btn-primary mt-auto" type="button">
-                                Nueva Impresión
+                            <button class="btn btn-primary mt-auto" type="button" data-toggle="modal"
+                            data-target="#dialogoNuevaImpresion">
+                                Nueva impresión
                             </button>
+
+                            <!-- Dialogo Modal Nueva impresion -->
+                            <div class="modal fade" id="dialogoNuevaImpresion" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">
+                                                Nueva impresión</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form class="form">
+                                                <h6> <b>Archivo:</b></h6>
+                                                <input type="file" />
+                                            </form>
+
+                                            <form class="form-inline">
+                                                <h6> <b>Propietario:</b></h6>
+                                                <div class="form-group mx-sm-3 mb-2">
+                                                    <label for="inputNewName" class="sr-only">NuevaIP</label>
+                                                    <input type="text" class="form-control-plaintext" id="inputNewName"
+                                                        placeholder="El pepe">
+                                                </div>
+                                            </form>
+
+                                            <form class="form-inline">
+                                                <h6> <b>Impresora/Grupo:</b></h6>
+                                                <div class="form-group mx-sm-3 mb-2">
+                                                    <label for="inputNewName" class="sr-only">NuevoModelo</label>
+                                                    <input type="text" class="form-control-plaintext" id="inputNewName"
+                                                        placeholder="">
+                                                </div>
+                                            </form>
+
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Cancelar</button>
+                                            <button type="button" class="btn btn-primary">Editar
+                                                impresora</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -257,8 +311,39 @@
                                             <br>Propietario: Manuel
                                             <br>Impresora: ???
                                             <p>
-                                                <br><button class="btn btn-primary" type="submit">Cancelar
-                                                    impresión</button>
+                                                <br><button class="btn btn-primary" type="button" data-toggle="modal"
+                                                    data-target="#dialogoCancelarImpresión">Cancelar impresión</button>
+
+                                            <div class="modal fade" id="dialogoCancelarImpresión" tabindex="-1"
+                                                role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">
+                                                                Cancelar impresión</h5>
+                                                            <button type="button" class="close" data-dismiss="modal"
+                                                                aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form class="form-inline">
+                                                                <h6> ¿Estás seguro/a de que deseas cancelar este
+                                                                    trabajo?
+                                                                </h6>
+
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary"
+                                                                data-dismiss="modal">Atrás</button>
+                                                            <button type="button" class="btn btn-danger">Cancelar
+                                                                impresión</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                             </p>
                                         </h4>
                                         </p>
@@ -291,7 +376,8 @@
             </div>
 
             <!-- impresoras -->
-            <div class="tab-pane fade" id="pills-printers" role="tabpanel" aria-labelledby="pills-printers-tab">
+            <div class="tab-pane fade show active" id="pills-printers" role="tabpanel"
+                aria-labelledby="pills-printers-tab">
                 <div class="row">
                     <!-- columna izquierda -->
                     <div class="col">
@@ -304,11 +390,11 @@
                             <!-- barra de busqueda -->
                             <nav class="navbar">
 
-                                <form class="form-inline">
-                                    <input class="form-control col-5" type="search" placeholder="Impresoras"
+                                <form class="form-inline ">
+                                    <input class="form-control col-5 mr-sm-2" type="search" placeholder="Impresoras"
                                         aria-label="Search">
                                     <div>
-                                        <select class="browser-default custom-select">
+                                        <select class="browser-default custom-select mr-sm-2">
                                             <option selected>Nombre</option>
                                             <option value="1">IP</option>
                                             <option value="2">Localizacion</option>
@@ -324,10 +410,12 @@
                                 <!-- opciones añadidas de filtrado -->
                                 <button type="button" class="btn btn-secondary btn-sm">Localización: Salón X</button>
                                 <button type="button" class="btn btn-secondary btn-sm">Grupo: Grupo3 X</button>
+
                             </div>
 
                             <!-- lista de grupos -->
                             <div class="container">
+                                <br>
                                 <div class="col scroll-panel-impresoras">
                                     <script>
                                         insertarImpresorasPanelIzquierdoImpresoras(200);
@@ -335,9 +423,70 @@
                                 </div>
                             </div>
                             <!-- botón inferior -->
-                            <button class="btn btn-primary mt-auto" type="button">
+                            <button class="btn btn-primary mt-auto" type="button" data-toggle="modal"
+                                data-target="#dialogoNuevaImpresora">
                                 Nueva Impresora
                             </button>
+
+                            <!-- Dialogo Modal Nueva impresora -->
+                            <div class="modal fade" id="dialogoNuevaImpresora" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">
+                                                Nueva impresora</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form class="form-inline">
+                                                <h6> <b>Nombre:</b></h6>
+                                                <div class="form-group mx-sm-3 mb-2">
+                                                    <label for="inputNewName" class="sr-only">NuevoNombre</label>
+                                                    <input type="text" class="form-control-plaintext" id="inputNewName"
+                                                        placeholder="Impresora">
+                                                </div>
+                                            </form>
+
+                                            <form class="form-inline">
+                                                <h6> <b>IP:</b></h6>
+                                                <div class="form-group mx-sm-3 mb-2">
+                                                    <label for="inputNewName" class="sr-only">NuevaIP</label>
+                                                    <input type="text" class="form-control-plaintext" id="inputNewName"
+                                                        placeholder="192.168.1.0">
+                                                </div>
+                                            </form>
+
+                                            <form class="form-inline">
+                                                <h6> <b>Modelo:</b></h6>
+                                                <div class="form-group mx-sm-3 mb-2">
+                                                    <label for="inputNewName" class="sr-only">NuevoModelo</label>
+                                                    <input type="text" class="form-control-plaintext" id="inputNewName"
+                                                        placeholder="">
+                                                </div>
+                                            </form>
+
+                                            <form class="form-inline">
+                                                <h6> <b>Localización:</b></h6>
+                                                <div class="form-group mx-sm-3 mb-2">
+                                                    <label for="inputNewName" class="sr-only">NuevaLocalizacion</label>
+                                                    <input type="text" class="form-control-plaintext" id="inputNewName"
+                                                        placeholder="">
+                                                </div>
+                                            </form>
+
+
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Cancelar</button>
+                                            <button type="button" class="btn btn-primary">Añadir impresora</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -354,22 +503,128 @@
                                                     maricarmen
 
                                                     <!-- icono editar -->
-                                                    <svg width="1em" height="1em" viewBox="0 0 16 16"
-                                                        class="bi bi-pencil-square" fill="currentColor"
-                                                        xmlns="http://www.w3.org/2000/svg">
-                                                        <path
-                                                            d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                                                        <path fill-rule="evenodd"
-                                                            d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                                                    </svg>
+                                                    <button type="button" data-toggle="modal"
+                                                        data-target="#dialogoEditarImpresora">
+                                                        <svg width="1em" height="1em" viewBox="0 0 16 16"
+                                                            class="bi bi-pencil-square" fill="currentColor"
+                                                            xmlns="http://www.w3.org/2000/svg">
+                                                            <path
+                                                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                                            <path fill-rule="evenodd"
+                                                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                                        </svg>
+                                                    </button>
                                                 </h2>
+
+                                                <!-- Dialogo Modal Editar impresora -->
+                                                <div class="modal fade" id="dialogoEditarImpresora" tabindex="-1"
+                                                    role="dialog" aria-labelledby="exampleModalLabel"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">
+                                                                    Editar impresora</h5>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form class="form-inline">
+                                                                    <h6> <b>Nombre:</b></h6>
+                                                                    <div class="form-group mx-sm-3 mb-2">
+                                                                        <label for="inputNewName"
+                                                                            class="sr-only">NuevoNombre</label>
+                                                                        <input type="text"
+                                                                            class="form-control-plaintext"
+                                                                            id="inputNewName" placeholder="Impresora">
+                                                                    </div>
+                                                                </form>
+
+                                                                <form class="form-inline">
+                                                                    <h6> <b>IP:</b></h6>
+                                                                    <div class="form-group mx-sm-3 mb-2">
+                                                                        <label for="inputNewName"
+                                                                            class="sr-only">NuevaIP</label>
+                                                                        <input type="text"
+                                                                            class="form-control-plaintext"
+                                                                            id="inputNewName" placeholder="192.168.1.0">
+                                                                    </div>
+                                                                </form>
+
+                                                                <form class="form-inline">
+                                                                    <h6> <b>Modelo:</b></h6>
+                                                                    <div class="form-group mx-sm-3 mb-2">
+                                                                        <label for="inputNewName"
+                                                                            class="sr-only">NuevoModelo</label>
+                                                                        <input type="text"
+                                                                            class="form-control-plaintext"
+                                                                            id="inputNewName" placeholder="">
+                                                                    </div>
+                                                                </form>
+
+                                                                <form class="form-inline">
+                                                                    <h6> <b>Localización:</b></h6>
+                                                                    <div class="form-group mx-sm-3 mb-2">
+                                                                        <label for="inputNewName"
+                                                                            class="sr-only">NuevaLocalizacion</label>
+                                                                        <input type="text"
+                                                                            class="form-control-plaintext"
+                                                                            id="inputNewName" placeholder="">
+                                                                    </div>
+                                                                </form>
+
+
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal">Cancelar</button>
+                                                                <button type="button" class="btn btn-primary">Editar
+                                                                    impresora</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
                                             </div>
                                             <div class="col">
                                                 <p>
                                                     <!-- boton eliminar impresora -->
-                                                    <br><button class="btn btn-primary" type="submit">Eliminar
+                                                    <br><button class="btn btn-primary" type="button"
+                                                        data-toggle="modal"
+                                                        data-target="#dialogoEliminarImpresora">Eliminar
                                                         impresora</button>
+
+                                                <div class="modal fade" id="dialogoEliminarImpresora" tabindex="-1"
+                                                    role="dialog" aria-labelledby="exampleModalLabel"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">
+                                                                    Eliminar impresora</h5>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form class="form-inline">
+                                                                    <h6> ¿Estás seguro/a de que deseas eliminar la
+                                                                        impresora? Esta acción no se puede deshacer</h6>
+
+                                                                </form>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal">Cancelar</button>
+                                                                <button type="button"
+                                                                    class="btn btn-danger">Eliminar</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 </p>
                                                 <p></p>
                                             </div>
@@ -418,6 +673,7 @@
 
                                     </div>
                                     <div class="row-4">
+                                        <br>
                                         <h3>Grupos a los que añadir</h3>
                                         <script>
                                             insertarGrupos(28, "+");
@@ -443,24 +699,63 @@
 
                             <!-- barra de busqueda -->
                             <nav class="navbar">
+
                                 <form class="form-inline">
+
                                     <input class="form-control mr-sm-2" type="search" placeholder="Grupo"
                                         aria-label="Search">
+
+
                                     <button class="btn btn-primary" type="submit">Buscar</button>
+
+
                                 </form>
                             </nav>
-                            <!-- lista de impresoras -->
+                            <!-- lista de grupos -->
                             <div class="container">
-                                <div class="col scroll-panel-impresoras">
+
+                                <div class="col scroll-panel-grupos">
                                     <script>
                                         insertarGruposPanelIzquierdoGrupos(200);
                                     </script>
                                 </div>
                             </div>
                             <!-- botón inferior -->
-                            <button class="btn btn-primary mt-auto" type="button">
+                            <button class="btn btn-primary mt-auto" type="button" data-toggle="modal"
+                                data-target="#dialogoNuevoGrupo">
                                 Nuevo Grupo
                             </button>
+
+                            <!-- Dialogo Modal Nuevo grupo -->
+                            <div class="modal fade" id="dialogoNuevoGrupo" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">
+                                                Nuevo grupo</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form class="form-inline">
+                                                <h6> <b>Nombre:</b></h6>
+                                                <div class="form-group mx-sm-3 mb-2">
+                                                    <label for="inputNewName" class="sr-only">NuevoNombre</label>
+                                                    <input type="text" class="form-control-plaintext" id="inputNewName"
+                                                        placeholder="Grupo 1">
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Cancelar</button>
+                                            <button type="button" class="btn btn-primary">Crear grupo</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -474,12 +769,12 @@
                                             <div class="col-9">
                                                 <h2>
                                                     <!-- nombre grupo -->
-                                                    grupo 1
+                                                    Grupo 1
 
                                                     <!-- icono editar -->
                                                     <!-- Button trigger modal -->
                                                     <button type="button" data-toggle="modal"
-                                                        data-target="#exampleModal">
+                                                        data-target="#dialogoEditarGrupo">
                                                         <svg width="1em" height="1em" viewBox="0 0 16 16"
                                                             class="bi bi-pencil-square" fill="currentColor"
                                                             xmlns="http://www.w3.org/2000/svg">
@@ -490,8 +785,8 @@
                                                         </svg>
                                                     </button>
 
-                                                    <!-- Modal -->
-                                                    <div class="modal fade" id="exampleModal" tabindex="-1"
+                                                    <!-- Dialogo Modal editar grupo -->
+                                                    <div class="modal fade" id="dialogoEditarGrupo" tabindex="-1"
                                                         role="dialog" aria-labelledby="exampleModalLabel"
                                                         aria-hidden="true">
                                                         <div class="modal-dialog" role="document">
@@ -506,22 +801,21 @@
                                                                 </div>
                                                                 <div class="modal-body">
                                                                     <form class="form-inline">
-                                                                        <h6> NombreActual</h6>
+                                                                        <h6> <b>Nombre:</b></h6>
                                                                         <div class="form-group mx-sm-3 mb-2">
                                                                             <label for="inputNewName"
                                                                                 class="sr-only">NuevoNombre</label>
                                                                             <input type="text"
                                                                                 class="form-control-plaintext"
-                                                                                id="inputNewName"
-                                                                                placeholder="nuevo nombre">
+                                                                                id="inputNewName" placeholder="Grupo 1">
                                                                         </div>
                                                                     </form>
                                                                 </div>
                                                                 <div class="modal-footer">
                                                                     <button type="button" class="btn btn-secondary"
-                                                                        data-dismiss="modal">Close</button>
-                                                                    <button type="button" class="btn btn-primary">Save
-                                                                        changes</button>
+                                                                        data-dismiss="modal">Cancelar</button>
+                                                                    <button type="button"
+                                                                        class="btn btn-primary">Guardar</button>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -532,8 +826,43 @@
                                             <div class="col">
                                                 <p>
                                                     <!-- boton eliminar grupo -->
-                                                    <br><button class="btn btn-primary" type="submit">Eliminar
+                                                    <br><button class="btn btn-primary" type="button"
+                                                        data-toggle="modal" data-target="#dialogoEliminarGrupo">Eliminar
                                                         grupo</button>
+
+                                                    <!-- Dialogo Modal eliminar grupo -->
+                                                <div class="modal fade" id="dialogoEliminarGrupo" tabindex="-1"
+                                                    role="dialog" aria-labelledby="exampleModalLabel"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel">
+                                                                    Eliminar grupo</h5>
+                                                                <button type="button" class="close" data-dismiss="modal"
+                                                                    aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form class="form-inline">
+                                                                    <h6> ¿Estás seguro/a de que deseas eliminar el
+                                                                        grupo? Esta acción no se puede deshacer</h6>
+
+                                                                </form>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary"
+                                                                    data-dismiss="modal">Cancelar</button>
+                                                                <button type="button"
+                                                                    class="btn btn-danger">Eliminar</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
                                                 </p>
                                             </div>
                                         </div>
@@ -564,13 +893,17 @@
                                     </div>
 
                                     <div class="row-4">
+                                        <br>
                                         <h3>Impresoras incluidas</h3>
+
                                         <script>
                                             insertarImpresorasGrupos(2, "X");
                                         </script>
 
+
                                     </div>
                                     <div class="row-4">
+                                        <br>
                                         <h3>Impresoras a añadir</h3>
                                         <script>
                                             insertarImpresorasGrupos(28, "+");

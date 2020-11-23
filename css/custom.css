@@ -12,6 +12,18 @@
 
 .scroll-panel-impresoras {
     position: relative;
+    height: 530px;
+    overflow: auto;
+}
+
+.scroll-panel-grupos {
+    position: relative;
+    height: 550px;
+    overflow: auto;
+}
+
+.scroll-panel-cola {
+    position: relative;
     height: 600px;
     overflow: auto;
 }
