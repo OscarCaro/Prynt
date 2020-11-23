@@ -85,6 +85,34 @@
         }
     }
 
+    function insertarImpresorasPanelIzquierdoImpresoras(n) {
+        for (var i = 0; i < n; i++) {
+            document.write(`
+                    <div class="card">
+                        <div class="row">
+                            <div class="col-10">
+                                Impresora${i + 1}
+                            </div>
+                            <div class="col">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-printer-fill"
+                                    fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
+                                    <path fill-rule="evenodd"
+                                        d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+                                    <path fill-rule="evenodd"
+                                        d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                                </svg> <!-- icono impresora -->
+                            </div>
+                        </div>
+                        <div class="row">
+                            <button type="button" class="btn btn-secondary btn-sm">Salón X</button>
+                            <button type="button" class="btn btn-secondary btn-sm">Grupo3  X</button>
+                        </div>
+                    </div>
+            `);
+        }
+    }
+
     function insertarImpresorasGrupos(n, b) {
         document.write(`
                     <div class="card">
@@ -299,9 +327,49 @@
                     <!-- columna izquierda -->
                     <div class="col">
                         <div class="card h-100">
-                                <div style="text-align:center">
-                                    <h2>Impresoras</h2>
+
+                            <div style="text-align:center">
+                                <h2>Impresoras</h2>
+                            </div>
+
+                            <!-- barra de busqueda -->
+                            <nav class="navbar">
+
+                                <form class="form-inline">
+                                    <input class="form-control col-5" type="search" placeholder="Impresoras"
+                                        aria-label="Search">
+                                    <div>
+                                        <select class="browser-default custom-select">
+                                            <option selected>Nombre</option>
+                                            <option value="1">IP</option>
+                                            <option value="2">Localizacion</option>
+                                            <option value="3">Modelo</option>
+                                            <option value="3">Grupo</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn btn-primary" type="submit">Filtrar</button>
+                                </form>
+                            </nav>
+
+                            <div>
+                                <!-- opciones añadidas de filtrado -->
+                                <button type="button" class="btn btn-secondary btn-sm">Localización: Salón X</button>
+                                <button type="button" class="btn btn-secondary btn-sm">Grupo: Grupo3 X</button>
+                            </div>
+
+                            <!-- lista de grupos -->
+                            <div class="container">
+                                <div class="col scroll-panel-impresoras">
+                                    <script>
+                                        insertarImpresorasPanelIzquierdoImpresoras(200);
+                                    </script>
                                 </div>
+                            </div>
+                            <!-- botón inferior -->
+                            <button class="btn btn-primary mt-auto" type="button">
+                                Nueva Impresión
+                            </button>
+
                         </div>
                     </div>
                     <!-- columna derecha -->
