@@ -5,7 +5,14 @@
 <head>
     <meta charset="UTF8" />
     <title>prynt</title>
-    <link rel="shortcut icon" href="/dice-3.ico" />
+    <link rel="shortcut icon" href="img/dice-3.ico" />
+    <style>
+       img {
+        border: 2px solid #007bff;
+        
+        
+      } 
+    </style>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="css/bootstrap.css">
@@ -14,22 +21,56 @@
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
 </head>
-
+<script>
+    function addEspacios(n) {
+        for (var i = 0; i < n; i++) {
+            document.write("&nbsp;");
+        }
+    }
+</script>
 <body>
     <div class="content">
         <div style="text-align:center">
 
-            <div style="color:#007bff;font-family: Consolas;font-size: 50px;">prynt</div>
+            <div style="color:#007bff;font-family: Consolas;font-size: 50px;"><b>prynt</b></div>
             <br>
-            <h2>Cambios respecto a la anterior entrega</h2>
-            <br>Respecto a la anterior entrega, hemos añadido muchas funcionalidades nuevas a nuestra aplicación.
             <br>
-            <br>Para empezar, la cola de impresión muestra esto:
+            <h2><b>Cambios respecto a la anterior entrega</b></h2>
+            <br>Respecto a la anterior entrega, hemos añadido muchas funcionalidades nuevas a nuestra aplicación. 
+                En general hemos rediseñado el panel izquierdo para poder mostrar 
+                <br>más información al usuario y también el panel derecho para añadir más funcionalidades, aprovechando mejor el espacio.<br>
             <br>
-            <br><img src="img/prueba_foto.png" width="1000" height="500"><br><br>
+            <br>
+            
+            <h3><b><br>Cola de impresión</b></h3>
+            
+            <br>Ahora en el panel izquierdo podemos buscar por nombre los documentos que están imprimiendose y a la espera:
+            <br><br>
+            <img src="img/cola_de_impresion_antiguo.png" height="400" > <img src="img/cola_de_impresion.png" height="400"><br><i>Diseño inicial <script>addEspacios(135)</script> Diseño final</i>
+            <br>
+            <br>
+            <h3><br><b>Impresoras</b></h3>
+            <br>En la nueva pestaña de Impresoras, en el panel izquierdo se pueden filtrar impresoras por todos sus parámetros. La lista de impresoras ahora tiene un símbolo a la derecha de cada elemento que indica el estado en el que se encuentra. 
+            <br>El contenido del panel derecho lo hemos rediseñado completamente para mostrar los grupos a los que pertenece la impresora y los grupos posibles a los que todavia no pertenece mediante dos paneles con los que se puede hacer scroll.
+            <br>Podemos filtrar los grupos por el nombre para identificarlos rápidamente. Para añadir, editar o eliminar la impresora basta con pulsar el botón y se abrirá un diálogo emergente para añadir/cambiar los atributos o un mensaje de advertencia.
+            <br>
+            <br><br><img src="img/impresoras_antiguo.png" height="400"> <img src="img/impresoras.png" height="400"><br><i>Diseño inicial <script>addEspacios(135)</script> Diseño final</i><br><br>
             <br>
             <br>
 
+            <h3><b>Grupos</b></h3>
+            <br>En la pestaña de Grupos, en el panel izquierdo se pueden buscar por nombre de grupo, además de ver varios grupos a los que pertenece. 
+            <br>Al igual que en la pestaña de impresoras, tenemos la opción de filtrar grupos además de ver la información de las impresoras y la posibilidad de añadir o eliminarlas del grupo.
+            <br><br><img src="img/grupos_antiguo.png" height="400" > <img src="img/grupos.png" height="400" ><br><i>Diseño inicial <script>addEspacios(135)</script> Diseño final</i><br><br>
+            <br>
+            <br>
+
+            <h3><b>Diálogos emergentes</b></h3>
+            <br>Por último, hemos añadido diálogos emergentes a todas las funcionalidades principales (añadir, editar y eliminar). En la primera entrega no los diseñamos 
+            <br> pero ahora sí y se encuentran implementados en la nueva interfaz
+            <br><br><img src="img/dialogo_nueva_impresora.png" height="400" ><br><i>Ejemplo de diálogo emergente de añadir impresora</i><br>
+            <br>
+            <br>
 
         </div>
 
