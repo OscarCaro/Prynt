@@ -61,7 +61,7 @@
         `);
     }
 
-    function insertarImpresoras(n) {
+    function insertarImpresorasPanelIzquierdoCola(n) {
         for (var i = 0; i < n; i++) {
             document.write(`
                     <div class="card">
@@ -153,7 +153,10 @@
                     <!-- columna izquierda -->
                     <div class="col">
                         <div class="card h-100">
-                            <h2>Cola de impresión</h2>
+
+                            <div style="text-align:center">
+                                <h2>Cola de impresión</h2>
+                            </div>
 
                             <!-- barra de busqueda -->
                             <nav class="navbar">
@@ -168,7 +171,7 @@
                             <div class="container">
                                 <div class="col scroll-panel-impresoras">
                                     <script>
-                                        insertarImpresoras(200);
+                                        insertarImpresorasPanelIzquierdoCola(200);
                                     </script>
                                 </div>
                                 <!--
@@ -296,7 +299,9 @@
                     <!-- columna izquierda -->
                     <div class="col">
                         <div class="card h-100">
-                            <h2>Impresoras</h2>
+                                <div style="text-align:center">
+                                    <h2>Impresoras</h2>
+                                </div>
                         </div>
                     </div>
                     <!-- columna derecha -->
@@ -394,7 +399,9 @@
                     <!-- columna izquierda -->
                     <div class="col">
                         <div class="card h-100">
-                            <h2>Grupos</h2>
+                            <div style="text-align:center">
+                                <h2>Grupos</h2>
+                            </div>
                         </div>
                     </div>
                     <!-- columna derecha -->
