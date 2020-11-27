@@ -23,6 +23,74 @@ import * as Pmgr from './pmgrapi.js'
 // en respuesta a algún evento.
 //
 
+function statusToSVG(state, desiredSize) {
+  switch (state) {
+    case PrinterStates.PRINTING:
+      return `
+      <svg width="1em" height="1em" viewBox="0 0 16 16"
+        class="bi bi-printer-fill" fill="dark"
+        xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
+        <path fill-rule="evenodd"
+          d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+        <path fill-rule="evenodd"
+          d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" /> 
+          `;
+      break;
+    case PrinterStates.PAUSED:
+      return `
+      <svg width="1em" height="1em" viewBox="0 0 16 16"
+        class="bi bi-printer-fill" fill="dark"
+        xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
+        <path fill-rule="evenodd"
+          d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+        <path fill-rule="evenodd"
+          d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" /> 
+          `;
+
+      break;
+    case PrinterStates.NO_INK:
+      return `
+      <svg width="1em" height="1em" viewBox="0 0 16 16"
+        class="bi bi-printer-fill" fill="dark"
+        xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
+        <path fill-rule="evenodd"
+          d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+        <path fill-rule="evenodd"
+          d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" /> 
+          `;
+
+      break;
+    case PrinterStates.NO_PAPER:
+      return `
+      <svg width="1em" height="1em" viewBox="0 0 16 16"
+        class="bi bi-printer-fill" fill="dark"
+        xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
+        <path fill-rule="evenodd"
+          d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+        <path fill-rule="evenodd"
+          d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" /> 
+          `;
+
+      break;
+    default:
+      return `
+      <svg width="1em" height="1em" viewBox="0 0 16 16"
+        class="bi bi-printer-fill" fill="dark"
+        xmlns="http://www.w3.org/2000/svg">
+        <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
+        <path fill-rule="evenodd"
+          d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+        <path fill-rule="evenodd"
+          d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" /> 
+          `;
+      break;
+  }
+}
+
 function createPrinterItem(printer) {
   const rid = 'x_' + Math.floor(Math.random() * 1000000);
   const hid = 'h_' + rid;
@@ -46,28 +114,36 @@ function createPrinterItem(printer) {
 
   return `
     <div class="card">
-    <div class="card-header" id="${hid}">
+      <div class="card-header" id="${hid}">
         <h2 class="mb-0">
-            <button class="btn btn-link" type="button"
+        <button class="btn btn-link w-100" type="button"
                 data-toggle="collapse" data-target="#${cid}",
                 aria-expanded="false" aria-controls="#${rid}">
-            <b class="pcard">${printer.alias}</b>
-            <span class="badge badge-pill ${pillClass[printer.status]}">${printer.status}</span>
-            <div class="small">
-                ${printer.model} at ${printer.location}
+          <div class="row w-100">
+            <div class="col">
+              <b class="pcard">${printer.alias}</b>
             </div>
-            </button>
-        </h2>
-    </div>
 
-    <div id="${cid}" class="collapse hide" aria-labelledby="${hid}
+            <!-- Comentado
+                <span class="badge badge-pill ${pillClass[printer.status]}">${printer.status}</span>
+            -->
+
+            <div class="col">
+              ${statusToSVG(printer.status, 10)} 
+            </div>
+          </div>
+        </button>
+        </h2>
+      </div>
+
+      <div id="${cid}" class="collapse hide" aria-labelledby="${hid}
         data-parent="#imIzLista">
         <div class="card-body pcard">
-            ${printerGroups}
-    </div>
-    </div>
-    </div>
- `;
+          ${printerGroups}
+        </div>
+      </div>
+    </div >
+        `;
 }
 
 // funcion para generar datos de ejemplo: impresoras, grupos, trabajos, ...
@@ -162,7 +238,7 @@ $(function () {
       const u = Gb.resolve("HDY0IQ");
       console.log("login ok!", u);
     } else {
-      console.log(`error en login (revisa la URL: ${serverUrl}, y verifica que está vivo)`);
+      console.log(`error en login(revisa la URL: ${serverUrl}, y verifica que está vivo)`);
       console.log("Generando datos de ejemplo para uso en local...")
 
       populate();
