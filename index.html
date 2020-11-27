@@ -121,13 +121,13 @@
                     <div class="card">
                         <div class="row">
                             <div class="col">
-                                Grupo${i + 1}
+                                NOMBRE_GRUPO${i + 1}
                             </div>                            
                         </div>
                         <div class="row">
                             <div class="col">
-                                <button type="button" class="btn btn-secondary btn-sm">Maricarmen</button>
-                                <button type="button" class="btn btn-secondary btn-sm">Impresora7</button>
+                                <button type="button" class="btn btn-secondary btn-sm">IMPRESORA1</button>
+                                <button type="button" class="btn btn-secondary btn-sm">IMPRESORA2</button>
                             </div>                            
                         </div>
                     </div>
@@ -140,7 +140,7 @@
                     <div class="card">
                     <div class="row scroll-panel-derecho">
         `);
-        var bE = `data-toggle="modal" data-target="#dialogoEliminarGrupo"`
+
         for (var i = 0; i < n; i++) {
             document.write(`
                         <div class="col-3">
@@ -175,6 +175,16 @@
                  </div>
         `);
     }
+
+    function pruebasFer(){
+        let nombre = document.getElementById("inputNuevoNombreImp").value;
+        let ip = document.getElementById("inputNuevaIP").value;
+        let modelo = document.getElementById("inputNuevoModelo").value;
+        let localizacion = document.getElementById("inputNuevaLocalizacion").value;
+        console.log(nombre + " " + ip + " " + modelo + " " + localizacion + " ");
+    }
+
+    
 
 </script>
 
@@ -221,12 +231,11 @@
                                     <button class="btn btn-primary" type="submit">Buscar</button>
                                 </form>
                             </nav>
-                            <!-- lista de impresoras -->
+                            <!-- lista de documentos -->
                             <div class="container">
-                                <div class="col scroll-panel-cola">
-                                    <script>
-                                        insertarImpresorasPanelIzquierdoCola(200);
-                                    </script>
+                                <div class="col scroll-panel-cola" id="ciIzLista">
+                                    
+                                    
                                 </div>
                             </div>
                             <!-- botón inferior -->
@@ -430,7 +439,7 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">
+                                            <h5 class="modal-title" id="TituloDialogoNuevaImpresora">
                                                 Nueva impresora</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
@@ -440,8 +449,8 @@
                                             <form class="form-inline">
                                                 <h6> <b>Nombre:</b></h6>
                                                 <div class="form-group mx-sm-3 mb-2">
-                                                    <label for="inputNewName" class="sr-only">NuevoNombre</label>
-                                                    <input type="text" class="form-control-plaintext" id="inputNewName"
+                                                    <label for="inputNuevoNombreImp" class="sr-only">NuevoNombre</label>
+                                                    <input type="text" class="form-control-plaintext" id="inputNuevoNombreImp"
                                                         placeholder="Impresora">
                                                 </div>
                                             </form>
@@ -449,8 +458,8 @@
                                             <form class="form-inline">
                                                 <h6> <b>IP:</b></h6>
                                                 <div class="form-group mx-sm-3 mb-2">
-                                                    <label for="inputNewName" class="sr-only">NuevaIP</label>
-                                                    <input type="text" class="form-control-plaintext" id="inputNewName"
+                                                    <label for="inputNuevaIP" class="sr-only">NuevaIP</label>
+                                                    <input type="text" class="form-control-plaintext" id="inputNuevaIP"
                                                         placeholder="192.168.1.0">
                                                 </div>
                                             </form>
@@ -458,8 +467,8 @@
                                             <form class="form-inline">
                                                 <h6> <b>Modelo:</b></h6>
                                                 <div class="form-group mx-sm-3 mb-2">
-                                                    <label for="inputNewName" class="sr-only">NuevoModelo</label>
-                                                    <input type="text" class="form-control-plaintext" id="inputNewName"
+                                                    <label for="inputNuevoModelo" class="sr-only">NuevoModelo</label>
+                                                    <input type="text" class="form-control-plaintext" id="inputNuevoModelo"
                                                         placeholder="">
                                                 </div>
                                             </form>
@@ -467,8 +476,8 @@
                                             <form class="form-inline">
                                                 <h6> <b>Localización:</b></h6>
                                                 <div class="form-group mx-sm-3 mb-2">
-                                                    <label for="inputNewName" class="sr-only">NuevaLocalizacion</label>
-                                                    <input type="text" class="form-control-plaintext" id="inputNewName"
+                                                    <label for="inputNuevaLocalizacion" class="sr-only">NuevaLocalizacion</label>
+                                                    <input type="text" class="form-control-plaintext" id="inputNuevaLocalizacion"
                                                         placeholder="">
                                                 </div>
                                             </form>
@@ -478,7 +487,7 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-dismiss="modal">Cancelar</button>
-                                            <button type="button" class="btn btn-primary">Añadir impresora</button>
+                                            <button type="button" class="btn btn-primary" id="botonAddImpresora" onclick="return pruebasFer()">Añadir impresora </button>
                                         </div>
                                     </div>
                                 </div>
@@ -711,15 +720,14 @@
 
                                 </form>
                             </nav>
+
                             <!-- lista de grupos -->
                             <div class="container">
-
-                                <div class="col scroll-panel-grupos">
-                                    <script>
-                                        insertarGruposPanelIzquierdoGrupos(200);
-                                    </script>
+                                <br>
+                                <div class="col scroll-panel-grupos" id="grIzLista">
                                 </div>
-                            </div>
+                            </div>                        
+                            
                             <!-- botón inferior -->
                             <button class="btn btn-primary mt-auto" type="button" data-toggle="modal"
                                 data-target="#dialogoNuevoGrupo">

@@ -138,6 +138,75 @@ function createPrinterItem(printer) {
         `;
 }
 
+function createJobItem(job) {
+
+  let totalPrinters = Pmgr.globalState.printers;
+  let printing;
+
+  for(let ij = 0; ij < totalPrinters.length; ij++) {
+    if(totalPrinters[ij].id == job.printer) {
+      printing = totalPrinters[ij].queue[0] == job.id;
+    }
+  }
+  
+  return `
+      <div class="card">
+        <div class="row">
+            <div class="col-9">
+            ${job.fileName}
+            </div>
+            ${printing?`
+              <div class="col">
+                  <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-printer-fill"
+                                    fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
+                                    <path fill-rule="evenodd"
+                                        d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
+                                    <path fill-rule="evenodd"
+                                        d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
+                  </svg> <!-- icono impresora -->
+                </div>`: " "
+              }
+               
+            
+        </div>
+    </div>
+  `;
+}
+
+function createGroupItem(group) {
+  // Lista de grupos a los que pertenece la impresora "printer"
+  
+  var i, j;
+  let groupPrintersNames = [];
+
+  for (i = 0; i < group.printers.length; i++){
+    for (j = 0; j < Pmgr.globalState.printers.length; j++){
+      if (group.printers[i] == Pmgr.globalState.printers[j].id){
+        groupPrintersNames.push(Pmgr.globalState.printers[j].name);
+      }
+    }
+  }
+
+ 
+  return `
+  <div class="card">
+  <div class="row">
+      <div class="col">
+      ${group.name}
+      </div>                            
+  </div>
+  <div class="row">
+      <div class="col">
+          <button type="button" class="btn btn-secondary btn-sm">${groupPrintersNames}</button>
+      </div>                            
+  </div>
+</div>
+        `;
+}
+
+
+
 // funcion para generar datos de ejemplo: impresoras, grupos, trabajos, ...
 // se puede no-usar, o modificar libremente
 async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount) {
@@ -211,8 +280,11 @@ $(function () {
     try {
       // vaciamos un contenedor
       $("#imIzLista").empty();
+      $("#grIzLista").empty();
       // y lo volvemos a rellenar con su nuevo contenido
+      Pmgr.globalState.jobs.forEach(j => $("#ciIzLista").append(createJobItem(j)));
       Pmgr.globalState.printers.forEach(m => $("#imIzLista").append(createPrinterItem(m)));
+      Pmgr.globalState.groups.forEach(g => $("#grIzLista").append(createGroupItem(g)));
       // y asi para cada cosa que pueda haber cambiado
     } catch (e) {
       console.log('Error actualizando', e);
@@ -243,5 +315,6 @@ $(function () {
 window.populate = populate
 window.Pmgr = Pmgr;
 window.createPrinterItem = createPrinterItem
+window.createGroupItem = createGroupItem
 
 
