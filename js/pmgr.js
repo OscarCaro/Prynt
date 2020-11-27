@@ -102,21 +102,25 @@ function createPrinterItem(printer) {
     <div class="card">
       <div class="card-header" id="${hid}">
         <h2 class="mb-0">
-        <button class="btn btn-link w-100" type="button"
+        <button class="btn w-100" type="button"
                 data-toggle="collapse" data-target="#${cid}",
                 aria-expanded="false" aria-controls="#${rid}">
-          <div class="row w-100">
-            <div class="col">
-              <b class="pcard">${printer.alias}</b>
+          <div class="row w-100 ">
+            <div class="col h-100 my-auto">
+              <h3>
+                <div class="pcard">
+                  ${printer.alias}
+                </div>
+              </h3>
             </div>
 
             <!-- Comentado
                 <span class="badge badge-pill ${pillClass[printer.status]}">${printer.status}</span>
             -->
 
-            <div class="col">  
-              <div class="text right">            
-                  ${statusToSVG(printer.status, 2.2)}
+            <div class="col h-100 my-auto">  
+              <div class="float-right">            
+                  ${statusToSVG(printer.status, 2)}
               </div>
             </div>
           </div>
