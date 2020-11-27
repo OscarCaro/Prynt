@@ -28,9 +28,10 @@ function statusToSVG(state, desiredSize) {
   const PS = Pmgr.PrinterStates;
   switch (state) {
     case PS.PRINTING:
+      // Source: https://icons.getbootstrap.com/
       return `
       <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-printer-fill"
-        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+          fill="dark" xmlns="http://www.w3.org/2000/svg">
         <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
         <path fill-rule="evenodd"
             d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
@@ -39,49 +40,40 @@ function statusToSVG(state, desiredSize) {
       </svg> <!-- icono impresora -->
       `;
       break;
+
     case PS.PAUSED:
+      // Source: https://icons.getbootstrap.com/
       return `
-      <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16"
-        class="bi bi-printer-fill" fill="dark"
-        xmlns="http://www.w3.org/2000/svg">
-        <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
-        <path fill-rule="evenodd"
-          d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
-        <path fill-rule="evenodd"
-          d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" /> 
-      </svg> <!-- icono impresora -->
+      <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-pause-fill" 
+          fill="dark" xmlns="http://www.w3.org/2000/svg">
+        <path d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z"/>
+      </svg>  <!-- icono paused -->
           `;
-
       break;
+
     case PS.NO_INK:
+      // Source: https://icons.getbootstrap.com/
       return `
-      <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16"
-        class="bi bi-printer-fill" fill="dark"
-        xmlns="http://www.w3.org/2000/svg">
-        <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
-        <path fill-rule="evenodd"
-          d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
-        <path fill-rule="evenodd"
-          d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" /> 
-      </svg> <!-- icono impresora -->
+      <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-droplet-half" 
+          fill="dark" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M7.21.8C7.69.295 8 0 8 0c.109.363.234.708.371 1.038.812 1.946 2.073 3.35 3.197 4.6C12.878 7.096 14 8.345 14 10a6 6 0 0 1-12 0C2 6.668 5.58 2.517 7.21.8zm.413 1.021A31.25 31.25 0 0 0 5.794 3.99c-.726.95-1.436 2.008-1.96 3.07C3.304 8.133 3 9.138 3 10c0 0 2.5 1.5 5 .5s5-.5 5-.5c0-1.201-.796-2.157-2.181-3.7l-.03-.032C9.75 5.11 8.5 3.72 7.623 1.82z"/>
+        <path fill-rule="evenodd" d="M4.553 7.776c.82-1.641 1.717-2.753 2.093-3.13l.708.708c-.29.29-1.128 1.311-1.907 2.87l-.894-.448z"/>
+      </svg>  <!-- icono no-ink -->
           `;
-
       break;
+
     case PS.NO_PAPER:
+      // Source: https://icons.getbootstrap.com/
       return `
-      <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16"
-        class="bi bi-printer-fill" fill="dark"
-        xmlns="http://www.w3.org/2000/svg">
-        <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
-        <path fill-rule="evenodd"
-          d="M11 9H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z" />
-        <path fill-rule="evenodd"
-          d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" /> 
-      </svg> <!-- icono impresora -->    
+      <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-file-earmark-excel-fill" 
+          fill="dark" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M2 2a2 2 0 0 1 2-2h5.293A1 1 0 0 1 10 .293L13.707 4a1 1 0 0 1 .293.707V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm7.5 1.5v-2l3 3h-2a1 1 0 0 1-1-1zM5.884 6.68a.5.5 0 1 0-.768.64L7.349 10l-2.233 2.68a.5.5 0 0 0 .768.64L8 10.781l2.116 2.54a.5.5 0 0 0 .768-.641L8.651 10l2.233-2.68a.5.5 0 0 0-.768-.64L8 9.219l-2.116-2.54z"/>
+      </svg> 
           `;
-
       break;
+
     default:
+
   }
 }
 
@@ -124,7 +116,7 @@ function createPrinterItem(printer) {
 
             <div class="col">  
               <div class="text right">            
-                  ${statusToSVG(printer.status, 3)}
+                  ${statusToSVG(printer.status, 2.2)}
               </div>
             </div>
           </div>
