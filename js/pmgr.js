@@ -77,36 +77,39 @@ function statusToSVG(state, desiredSize) {
   }
 }
 
+function getPrinterGroups(printer){
+  return Pmgr.globalState.groups.filter((g) => g.printers.indexOf(printer.id) > -1);
+}
+
+function getPrinterJobs(printer){
+  return printer.queue.map((jId) => Pmgr.globalState.jobs.find((j) => j.id == jId));
+}
+
 function createPrinterItem(printer) {
   const rid = 'x_' + Math.floor(Math.random() * 1000000);
   const hid = 'h_' + rid;
   const cid = 'c_' + rid;
 
-  let printerGroups = Pmgr.globalState.groups
-    .filter((g) => g.printers.indexOf(printer.id) > -1);
+  let printerJobs = getPrinterJobs(printer);
+  let printerJobsFormatted;
 
-  let printerGroupsFormatted;
-
-  if (printerGroups.length <= 5){
-    printerGroupsFormatted = printerGroups
-      .map((g) =>
-        `<span class="badge badge-secondary">${g.name}</span>`
-      ).join(" ");
+  if (printerJobs.length <= 5){
+    printerJobsFormatted = printerJobs      
+      .map((j) => `<span class="badge badge-secondary">${j.fileName}</span>`)
+      .join(" ");
   }
   else {
-    let numExtra = printerGroups.length - 5;
+    let numExtra = printerJobs.length - 5; 
 
-    printerGroupsFormatted = printerGroups
+    printerJobsFormatted = printerJobs
       .slice(0,5)                                                 
-      .map((g) =>
-        `<span class="badge badge-secondary">${g.name}</span>`    
-      )
+      .map((j) => `<span class="badge badge-secondary">${j.fileName}</span>`)
       .join(" ");                                                
       
-    printerGroupsFormatted += (` <span class="badge badge-secondary">${"+" + numExtra}</span>`);
+    printerJobsFormatted += (` <span class="badge badge-secondary">${"+" + numExtra}</span>`);
     /* Explanation:
-        - slice => returns subarray from 0 to 5 (discard the rest of the groups)
-        - map   => takes each item (a group) and puts the group name in html
+        - slice => returns subarray from 0 to 5 (discard the rest of the jobs)
+        - map   => takes each item (a job) and puts the job fileName in html
         - join  => converts array of html items into a single string of html
         - +=    => inserts the last element (the "+numExtra") as a string to the long html string
     */
@@ -141,7 +144,7 @@ function createPrinterItem(printer) {
       <div id="${cid}" class="collapse hide" aria-labelledby="${hid}
         data-parent="#imIzLista">
         <div class="card-body pcard">
-          ${printerGroupsFormatted}
+          ${printerJobsFormatted}
         </div>
       </div>
     </div >
