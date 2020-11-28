@@ -82,21 +82,35 @@ function createPrinterItem(printer) {
   const hid = 'h_' + rid;
   const cid = 'c_' + rid;
 
-  // usar [] en las claves las evalua (ver https://stackoverflow.com/a/19837961/15472)
-  const PS = Pmgr.PrinterStates;
-  let pillClass = {
-    [PS.PAUSED]: "badge-secondary",
-    [PS.PRINTING]: "badge-success",
-    [PS.NO_INK]: "badge-danger",
-    [PS.NO_PAPER]: "badge-danger"
-  };
-
-  // Lista de grupos a los que pertenece la impresora "printer"
   let printerGroups = Pmgr.globalState.groups
-    .filter((g) => g.printers.indexOf(printer.id) > -1)
-    .map((g) =>
-      `<span class="badge badge-secondary">${g.name}</span>`
-    ).join(" ");
+    .filter((g) => g.printers.indexOf(printer.id) > -1);
+
+  let printerGroupsFormatted;
+
+  if (printerGroups.length <= 5){
+    printerGroupsFormatted = printerGroups
+      .map((g) =>
+        `<span class="badge badge-secondary">${g.name}</span>`
+      ).join(" ");
+  }
+  else {
+    let numExtra = printerGroups.length - 5;
+
+    printerGroupsFormatted = printerGroups
+      .slice(0,5)                                                 
+      .map((g) =>
+        `<span class="badge badge-secondary">${g.name}</span>`    
+      )
+      .join(" ");                                                
+      
+    printerGroupsFormatted += (` <span class="badge badge-secondary">${"+" + numExtra}</span>`);
+    /* Explanation:
+        - slice => returns subarray from 0 to 5 (discard the rest of the groups)
+        - map   => takes each item (a group) and puts the group name in html
+        - join  => converts array of html items into a single string of html
+        - +=    => inserts the last element (the "+numExtra") as a string to the long html string
+    */
+  }
 
   return `
     <div class="card">
@@ -114,10 +128,6 @@ function createPrinterItem(printer) {
               </h3>
             </div>
 
-            <!-- Comentado
-                <span class="badge badge-pill ${pillClass[printer.status]}">${printer.status}</span>
-            -->
-
             <div class="col h-100 my-auto">  
               <div class="float-right">            
                   ${statusToSVG(printer.status, 2)}
@@ -131,7 +141,7 @@ function createPrinterItem(printer) {
       <div id="${cid}" class="collapse hide" aria-labelledby="${hid}
         data-parent="#imIzLista">
         <div class="card-body pcard">
-          ${printerGroups}
+          ${printerGroupsFormatted}
         </div>
       </div>
     </div >
