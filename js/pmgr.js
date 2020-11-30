@@ -271,7 +271,6 @@ function updateCiDer(doc) {
   idDoc = doc.id;
   let totalJobs = Pmgr.globalState.jobs;
 
-
   for (let ij = 0; ij < totalJobs.length; ij++) {
     if (totalJobs[ij].id == idDoc) {
       nameDoc = totalJobs[ij].fileName;
@@ -280,9 +279,21 @@ function updateCiDer(doc) {
     }
   }
 
+  let totalPrinters = Pmgr.globalState.printers;
+  let printing;
+
+  for (let ij = 0; ij < totalPrinters.length; ij++) {
+    if (totalPrinters[ij].id == printerDoc) {
+      printing = totalPrinters[ij].queue[0] == idDoc;
+    }
+  }
+
+  console.log("El documento seleccionado tiene icono: " + printing)
+
   $("#ciDerDatos").html(
     `<div class="col-6" align="center">
           <div class="row-4" style="font-size:xxx-large;">
+          ${printing ? `
               <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-printer-fill"
                   fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                   <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5z" />
@@ -291,7 +302,7 @@ function updateCiDer(doc) {
                   <path fill-rule="evenodd"
                       d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
               </svg> <!-- icono impresora -->
-
+          `: ""}
               <!-- nombre archivo -->
               ${nameDoc}
           </div>
@@ -310,7 +321,7 @@ function updateCiDer(doc) {
                       <div class="modal-content">
                           <div class="modal-header">
                               <h5 class="modal-title" id="exampleModalLabel">
-                                  Cancelar impresión</h5>
+                                  Cancelar la impresión ${nameDoc}</h5>
                               <button type="button" class="close" data-dismiss="modal"
                                   aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
@@ -318,8 +329,8 @@ function updateCiDer(doc) {
                           </div>
                           <div class="modal-body">
                               <form class="form-inline">
-                                  <h6> ¿Estás seguro/a de que deseas cancelar este
-                                      trabajo?
+                                  <h6> ¿Estás seguro/a de que deseas cancelar el
+                                      trabajo ${nameDoc}?
                                   </h6>
 
                               </form>
@@ -360,12 +371,13 @@ function updateImDer(printer) {
 
   let printerId = printer.id;
   let totalPrinters = Pmgr.globalState.printers;
-  let printerName, printerModel, printerLoc, printerStatus;
+  let printerName, printerModel, printerLoc, printerStatus, printerIp;
 
 
   for (let ij = 0; ij < totalPrinters.length; ij++) {
     if (totalPrinters[ij].id == printerId) {
       printerName = totalPrinters[ij].alias;
+      printerIp = totalPrinters[ij].ip;
       printerModel = totalPrinters[ij].model;
       printerLoc = totalPrinters[ij].location;
       printerStatus = totalPrinters[ij].status;
@@ -404,7 +416,7 @@ function updateImDer(printer) {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">
-                                    Editar impresora</h5>
+                                    Editar impresora ${printerName}</h5>
                                 <button type="button" class="close" data-dismiss="modal"
                                     aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -418,7 +430,7 @@ function updateImDer(printer) {
                                             class="sr-only">NuevoNombre</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputNewName" placeholder="Impresora">
+                                            id="inputNewName" value=${printerName}>
                                     </div>
                                 </form>
 
@@ -429,7 +441,7 @@ function updateImDer(printer) {
                                             class="sr-only">NuevaIP</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputEditIP" placeholder="192.168.1.0">
+                                            id="inputEditIP" value=${printerIp}>
                                     </div>
                                 </form>
 
@@ -440,7 +452,7 @@ function updateImDer(printer) {
                                             class="sr-only">NuevoModelo</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputEditModel" placeholder="">
+                                            id="inputEditModel" value=${printerModel}>
                                     </div>
                                 </form>
 
@@ -451,7 +463,7 @@ function updateImDer(printer) {
                                             class="sr-only">NuevaLocalizacion</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputNewLocation" placeholder="">
+                                            id="inputNewLocation" value="${printerLoc}">
                                     </div>
                                 </form>
 
@@ -483,7 +495,7 @@ function updateImDer(printer) {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">
-                                    Eliminar impresora</h5>
+                                    Eliminar impresora ${printerName}</h5>
                                 <button type="button" class="close" data-dismiss="modal"
                                     aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -492,7 +504,7 @@ function updateImDer(printer) {
                             <div class="modal-body">
                                 <form class="form-inline">
                                     <h6> ¿Estás seguro/a de que deseas eliminar la
-                                        impresora? Esta acción no se puede deshacer</h6>
+                                        impresora ${printerName}? Esta acción no se puede deshacer</h6>
 
                                 </form>
                             </div>
@@ -517,8 +529,11 @@ function updateImDer(printer) {
             </div>
             <div class="col">
                 <!-- datos impresora -->
-                <h4>Modelo: ${printerModel}
-                    <br>Localización: ${printerLoc}
+                <h4>     ID: ${printerId}
+                    <br> IP: ${printerIp}
+                    <br> Modelo: ${printerModel}
+                    <br> Localización: ${printerLoc}
+
                 </h4>
             </div>
         </div>
@@ -621,7 +636,7 @@ function updateGrDer(group) {
                                             class="sr-only">NuevoNombre</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputEditGroupName" placeholder="${groupName}">
+                                            id="inputEditGroupName" value="${groupName}">
                                     </div>
                                 </form>
                             </div>

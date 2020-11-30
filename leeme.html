@@ -5,13 +5,13 @@
 <head>
     <meta charset="UTF8" />
     <title>prynt</title>
-    <link rel="shortcut icon" href="img/dice-3.ico" />
+    <link rel="shortcut icon" href="img/dice.ico" />
     <style>
-       img {
-        border: 2px solid #007bff;
-        
-        
-      } 
+        img {
+            border: 2px solid #007bff;
+
+
+        }
     </style>
 
     <!-- Bootstrap CSS -->
@@ -28,6 +28,7 @@
         }
     }
 </script>
+
 <body>
     <div class="content">
         <div style="text-align:center">
@@ -36,39 +37,70 @@
             <br>
             <br>
             <h2><b>Cambios respecto a la anterior entrega</b></h2>
-            <br>Respecto a la anterior entrega, hemos añadido muchas funcionalidades nuevas a nuestra aplicación. 
-                En general hemos rediseñado el panel izquierdo para poder mostrar 
-                <br>más información al usuario y también el panel derecho para añadir más funcionalidades, aprovechando mejor el espacio.<br>
+            <br>Respecto a la anterior entrega, hemos añadido interacciones a nuestra aplicación.
+            En las tres pestañas se pueden interacionar con los elementos
+            <br>del panel izquierdo para visualizar la información en el panel derecho.<br>
             <br>
             <br>
-            
+
             <h3><b><br>Cola de impresión</b></h3>
-            
-            <br>Ahora en el panel izquierdo podemos buscar por nombre los documentos que están imprimiendose y a la espera:
+
+            <br>Ahora en el panel izquierdo salen las impresoras generadas por la api con el símbolo de impresora si se
+            está imprimiendo.
+            <br>Además podemos interaccionar con los elementos de la lista mostrandose la información en el panel
+            derecho:
             <br><br>
-            <img src="img/cola_de_impresion_antiguo.png" height="400" > <img src="img/cola_de_impresion.png" height="400"><br><i>Diseño inicial <script>addEspacios(135)</script> Diseño final</i>
+            <img src="img/cola_de_impresion_antiguo.png" height="400"> <img src="img/cola_de_impresion.png"
+                height="400"><br><i>Entrega anterior
+                <script>addEspacios(135)</script> Entrega actual</i>
             <br>
             <br>
             <h3><br><b>Impresoras</b></h3>
-            <br>En la nueva pestaña de Impresoras, en el panel izquierdo se pueden filtrar impresoras por todos sus parámetros. La lista de impresoras ahora tiene un símbolo a la derecha de cada elemento que indica el estado en el que se encuentra. 
-            <br>El contenido del panel derecho lo hemos rediseñado completamente para mostrar los grupos a los que pertenece la impresora y los grupos posibles a los que todavia no pertenece mediante dos paneles con los que se puede hacer scroll.
-            <br>Podemos filtrar los grupos por el nombre para identificarlos rápidamente. Para añadir, editar o eliminar la impresora basta con pulsar el botón y se abrirá un diálogo emergente para añadir/cambiar los atributos o un mensaje de advertencia.
+            <br>Ahora en la pestaña de impresoras se pueden ver las impresoras generadas por la api y un símbolo al lado
+            indicando el estado en el que se encuentran.
+            <br>Al pulsar en uno de los elementos aparece un desplegable que permite ver los 5 primeros documentos que
+            tiene la impresora en la cola de
+            impresión y una etiqueta más indicando el número de documentos que faltan por mostrar.
+            <br>Además tambien aparece la información de la impresora en el panel derecho junto con los botones de
+            editar y eliminar impresora.
             <br>
-            <br><br><img src="img/impresoras_antiguo.png" height="400"> <img src="img/impresoras.png" height="400"><br><i>Diseño inicial <script>addEspacios(135)</script> Diseño final</i><br><br>
+            <br><br><img src="img/impresoras_antiguo.png" height="400"> <img src="img/impresoras.png"
+                height="400"><br><i>Entrega anterior
+                <script>addEspacios(135)</script> Entrega actual</i><br><br>
             <br>
             <br>
 
             <h3><b>Grupos</b></h3>
-            <br>En la pestaña de Grupos, en el panel izquierdo se pueden buscar por nombre de grupo, además de ver varios grupos a los que pertenece. 
-            <br>Al igual que en la pestaña de impresoras, tenemos la opción de filtrar grupos además de ver la información de las impresoras y la posibilidad de añadir o eliminarlas del grupo.
-            <br><br><img src="img/grupos_antiguo.png" height="400" > <img src="img/grupos.png" height="400" ><br><i>Diseño inicial <script>addEspacios(135)</script> Diseño final</i><br><br>
+            <br>En la pestaña de Grupos, al igual que en la de impresoras, tenemos en la lista de la izquierda los
+            elementos desplegables que
+            <br>nos muestran una previsualización de qué impresoras pertenecen al grupo seleccionado.
+            <br>Además el panel de la derecha podemos ver la información dinámica relacionada con el grupo seleccionado.
+            <br><br><img src="img/grupos_antiguo.png" height="400"> <img src="img/grupos.png"
+                height="400"><br><i>Entrega anterior
+                <script>addEspacios(135)</script> Entrega actual</i><br><br>
             <br>
             <br>
 
             <h3><b>Diálogos emergentes</b></h3>
-            <br>Por último, hemos añadido diálogos emergentes a todas las funcionalidades principales (añadir, editar y eliminar). En la primera entrega no los diseñamos 
-            <br> pero ahora sí y se encuentran implementados en la nueva interfaz
-            <br><br><img src="img/dialogo_nueva_impresora.png" height="400" ><br><i>Ejemplo de diálogo emergente de añadir impresora</i><br>
+            <br>Por último, en los diálogos emergentes aparece la información relacionada con la acción que hemos
+            seleccionado.
+            <br> En los siguientes ejemplos, podemos ver como la información de los diálogos corresponde con su
+            información dinámica.
+            <br> Especialmente en el ejemplo de editar una impresora, podemos ver como por defecto en el formulario
+            aparecen los datos actuales.
+            <br><br><img src="img/dialogo_editar_impresora.png" height="400">
+            <img src="img/dialogo_eliminar_grupo.png" height="400">
+            <br><i>Ejemplo de diálogo emergente de editar impresora</i>
+            <script>addEspacios(85)</script> <i>Ejemplo de diálogo emergente de eliminar grupo</i><br>
+            <br>
+            <br>
+
+            <h3><b>Tareas pendientes</b></h3>
+            <br> Para continuar con la tarea de datos dinámicos tenemos que añadir tanto en la pestaña de impresoras
+            como en la de grupos los paneles inferiores derechos
+            <br> que muestran información relacionada con los filtros aplicados en la barra de filtrado. Por lo que
+            cuando implementemos búsquedas y filrados podremos
+            <br> completar esa información.
             <br>
             <br>
 
