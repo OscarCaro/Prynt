@@ -237,6 +237,8 @@ function createGroupItem(group) {
 
 function updateCiDer(doc) {
 
+  interfaceState.ciSelectedJob = doc;
+
   let nameDoc, idDoc, ownerDoc, printerDoc;
 
   idDoc = doc.id;
@@ -326,6 +328,8 @@ function updateCiDer(doc) {
 }
 
 function updateImDer(printer) {
+
+  interfaceState.imSelectedPrinter = printer.id;
 
   let printerId = printer.id;
   let totalPrinters = Pmgr.globalState.printers;
