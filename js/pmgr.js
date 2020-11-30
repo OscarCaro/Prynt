@@ -233,7 +233,7 @@ function createGroupItem(group) {
 
   return `
     <div class="card">
-      <div class="card-header" id="${group.name}" onclick="updateGrDer(this)">
+      <div class="card-header" id="${group.id}" onclick="updateGrDer(this)">
         <h2 class="mb-0">
         <button class="btn w-100" type="button"
                 data-toggle="collapse" data-target="#${cid}",
@@ -562,7 +562,18 @@ function updateImDer(printer) {
 
 function updateGrDer(group) {
 
-  interfaceState.grSelectedGroup = group;
+  interfaceState.grSelectedGroup = group.id;
+
+  let groupId = group.id;
+  let totalGroups = Pmgr.globalState.groups;
+  let groupName;
+
+
+  for (let ij = 0; ij < totalGroups.length; ij++) {
+    if (totalGroups[ij].id == groupId) {
+      groupName = totalGroups[ij].name;
+    }
+  }
 
   $("#grDerDatos").html(
     `
@@ -572,7 +583,7 @@ function updateGrDer(group) {
             <div class="col-9">
                 <h2>
                     <!-- nombre grupo -->
-                    ${group.id}
+                    ${groupName}
 
                     <!-- icono editar -->
                     <button type="button" data-toggle="modal"
@@ -596,7 +607,7 @@ function updateGrDer(group) {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">
-                                    Editar grupo ${group.id}</h5>
+                                    Editar grupo ${groupName}</h5>
                                 <button type="button" class="close" data-dismiss="modal"
                                     aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -610,7 +621,7 @@ function updateGrDer(group) {
                                             class="sr-only">NuevoNombre</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputEditGroupName" placeholder="${group.id}">
+                                            id="inputEditGroupName" placeholder="${groupName}">
                                     </div>
                                 </form>
                             </div>
@@ -640,7 +651,7 @@ function updateGrDer(group) {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">
-                                    Eliminar grupo ${group.id}</h5>
+                                    Eliminar grupo ${groupName}</h5>
                                 <button type="button" class="close" data-dismiss="modal"
                                     aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -649,7 +660,7 @@ function updateGrDer(group) {
                             <div class="modal-body">
                                 <form class="form-inline">
                                     <h6> ¿Estás seguro/a de que deseas eliminar el
-                                        grupo ${group.id}? Esta acción no se puede deshacer</h6>
+                                        grupo ${groupName}? Esta acción no se puede deshacer</h6>
 
                                 </form>
                             </div>
