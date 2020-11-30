@@ -23,6 +23,22 @@ import * as Pmgr from './pmgrapi.js'
 // en respuesta a algún evento.
 //
 
+class InterfaceState {
+  constructor(ciSelectedJob, imSelectedPrinter, imFilters, grSelectedGroup){
+    // State of Cola de Impresion tab
+    this.ciSelectedJob = ciSelectedJob;
+
+    // State of Impresoras tab
+    this.imSelectedPrinter = imSelectedPrinter;
+    this.imFilters = imFilters || [];
+    
+    // State of Grupos tab
+    this.grSelectedGroup = grSelectedGroup;
+  }
+}
+
+let interfaceState = undefined;  // Initialized on update(), declared here for global access 
+
 
 function statusToSVG(state, desiredSize) {
   const PS = Pmgr.PrinterStates;
@@ -163,7 +179,7 @@ function createJobItem(job) {
   }
   
   return `
-      <div class="card" id="${job.id}" onclick="dataDocument(this)">
+      <div class="card" id="${job.id}" onclick="updateCiDer(this)">
         <div class="row">
             <div class="col-9">
             ${job.fileName}
@@ -218,14 +234,22 @@ function createGroupItem(group) {
         `;
 }
 
-function firstDocument(doc){
+
+function updateCiDer(doc){
             
   let nameDoc, idDoc, ownerDoc, printerDoc;
   
   idDoc = doc.id;
-  nameDoc = doc.fileName;
-  ownerDoc = doc.owner
-  printerDoc = doc.printer;
+  let totalJobs = Pmgr.globalState.jobs;
+  
+  
+  for(let ij = 0; ij < totalJobs.length; ij++) {
+      if(totalJobs[ij].id == idDoc) {
+          nameDoc = totalJobs[ij].fileName;
+          ownerDoc = totalJobs[ij].owner
+          printerDoc = totalJobs[ij].printer;
+      }
+  }
 
   $("#ciDerDatos").html( 
       `<div class="col-6" align="center">
@@ -369,7 +393,7 @@ async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount
 // Código de pegamento, ejecutado sólo una vez que la interfaz esté cargada.
 // Generalmente de la forma $("selector").cosaQueSucede(...)
 //
-var firstTick = true;
+
 $(function () {
 
   // funcion de actualización de ejemplo. Llámala para refrescar interfaz
@@ -384,11 +408,13 @@ $(function () {
       Pmgr.globalState.groups.forEach(g => $("#grIzLista").append(createGroupItem(g)));
       // y asi para cada cosa que pueda haber cambiado
 
-      //mostrar el primer documento por defecto
-      if (Pmgr.globalState.jobs.length == 1 || firstTick){
-        firstTick = false;
-        firstDocument(Pmgr.globalState.jobs[0]);
+      // Inicializar interfaceState
+      if (interfaceState == undefined){
+        interfaceState = new InterfaceState(Pmgr.globalState.jobs[0], Pmgr.globalState.printers[0], [], Pmgr.globalState.groups[0]);
       }
+
+      //
+      updateCiDer(interfaceState.ciSelectedJob);
 
     } catch (e) {
       console.log('Error actualizando', e);
@@ -420,5 +446,6 @@ window.populate = populate
 window.Pmgr = Pmgr;
 window.createPrinterItem = createPrinterItem
 window.createGroupItem = createGroupItem
+window.updateCiDer = updateCiDer
 
 
