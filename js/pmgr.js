@@ -93,8 +93,12 @@ function statusToSVG(state, desiredSize) {
   }
 }
 
-function getPrinterGroups(printer) {
-  return Pmgr.globalState.groups.filter((g) => g.printers.indexOf(printer.id) > -1);
+function getPrinterGroups(group) {
+  for (let i = 0; i < Pmgr.globalState.groups.length; i++) {
+    if (Pmgr.globalState.groups[i].id == group.id) {
+      return Pmgr.globalState.groups[i].printers;
+    }
+  }
 }
 
 function getPrinterJobs(printer) {
@@ -204,36 +208,59 @@ function createJobItem(job) {
 }
 
 function createGroupItem(group) {
-  // Lista de grupos a los que pertenece la impresora "printer"
+  const rid = 'x_' + Math.floor(Math.random() * 1000000);
+  const hid = 'h_' + rid;
+  const cid = 'c_' + rid;
 
-  var i, j;
-  let groupPrintersNames = [];
+  let printersGroup = getPrinterGroups(group);
+  let printersGroupsFormatted;
 
-  for (i = 0; i < group.printers.length; i++) {
-    for (j = 0; j < Pmgr.globalState.printers.length; j++) {
-      if (group.printers[i] == Pmgr.globalState.printers[j].id) {
-        groupPrintersNames.push(Pmgr.globalState.printers[j].name);
-      }
-    }
+  if (printersGroup <= 5) {
+    printersGroupsFormatted = printersGroup
+      .map((j) => `<span class="badge badge-secondary">${Pmgr.globalState.printers[j].alias}</span>`)
+      .join(" ");
+  }
+  else {
+    let numExtra = printersGroup.length - 5;
+
+    printersGroupsFormatted = printersGroup
+      .slice(0, 5)
+      .map((j) => `<span class="badge badge-secondary">${Pmgr.globalState.printers[j].alias}</span>`)
+      .join(" ");
+
+    printersGroupsFormatted += (` <span class="badge badge-secondary">${"+" + numExtra}</span>`);
   }
 
-
   return `
-  <div class="card">
-  <div class="row">
-      <div class="col">
-      ${group.name}
-      </div>                            
-  </div>
-  <div class="row">
-      <div class="col">
-          <button type="button" class="btn btn-secondary btn-sm">${groupPrintersNames}</button>
-      </div>                            
-  </div>
-</div>
-        `;
-}
+    <div class="card">
+      <div class="card-header" id="${group.name}" onclick="updateGrDer(this)">
+        <h2 class="mb-0">
+        <button class="btn w-100" type="button"
+                data-toggle="collapse" data-target="#${cid}",
+                aria-expanded="false" aria-controls="#${rid}">
+          <div class="row w-100 ">
+            <div class="col h-100 my-auto">
+              <h3>
+                <div class="pcard">
+                  ${group.name}
+                </div>
+              </h3>
+            </div>
+          </div>
+        </button>
+        </h2>
+      </div>
 
+      <div id="${cid}" class="collapse hide" aria-labelledby="${hid}
+        data-parent="#imIzLista">
+        <div class="card-body pcard">
+          ${printersGroupsFormatted}
+        </div>
+      </div>
+    </div >
+        `;
+
+}
 
 function updateCiDer(doc) {
 
@@ -335,7 +362,7 @@ function updateImDer(printer) {
   let totalPrinters = Pmgr.globalState.printers;
   let printerName, printerModel, printerLoc, printerStatus;
 
-  
+
   for (let ij = 0; ij < totalPrinters.length; ij++) {
     if (totalPrinters[ij].id == printerId) {
       printerName = totalPrinters[ij].alias;
@@ -398,33 +425,33 @@ function updateImDer(printer) {
                                 <form class="form-inline">
                                     <h6> <b>IP:</b></h6>
                                     <div class="form-group mx-sm-3 mb-2">
-                                        <label for="inputNewName"
+                                        <label for="inputEditIP"
                                             class="sr-only">NuevaIP</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputNewName" placeholder="192.168.1.0">
+                                            id="inputEditIP" placeholder="192.168.1.0">
                                     </div>
                                 </form>
 
                                 <form class="form-inline">
                                     <h6> <b>Modelo:</b></h6>
                                     <div class="form-group mx-sm-3 mb-2">
-                                        <label for="inputNewName"
+                                        <label for="inputEditModel"
                                             class="sr-only">NuevoModelo</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputNewName" placeholder="">
+                                            id="inputEditModel" placeholder="">
                                     </div>
                                 </form>
 
                                 <form class="form-inline">
                                     <h6> <b>Localización:</b></h6>
                                     <div class="form-group mx-sm-3 mb-2">
-                                        <label for="inputNewName"
+                                        <label for="inputNewLocation"
                                             class="sr-only">NuevaLocalizacion</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputNewName" placeholder="">
+                                            id="inputNewLocation" placeholder="">
                                     </div>
                                 </form>
 
@@ -530,9 +557,163 @@ function updateImDer(printer) {
     </div>
 </div>
 `);
+
 }
 
+function updateGrDer(group) {
 
+  interfaceState.grSelectedGroup = group;
+
+  $("#grDerDatos").html(
+    `
+    <div class="col">
+    <div class="row-4">
+        <div class="row">
+            <div class="col-9">
+                <h2>
+                    <!-- nombre grupo -->
+                    ${group.id}
+
+                    <!-- icono editar -->
+                    <button type="button" data-toggle="modal"
+                        data-target="#dialogoEditarGrupo">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16"
+                            class="bi bi-pencil-square" fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                            <path fill-rule="evenodd"
+                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                        </svg>
+                    </button>
+                </h2>
+
+                <!-- Dialogo Modal Editar Grupo -->
+                <div class="modal fade" id="dialogoEditarGrupo" tabindex="-1"
+                    role="dialog" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">
+                                    Editar grupo ${group.id}</h5>
+                                <button type="button" class="close" data-dismiss="modal"
+                                    aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-inline">
+                                    <h6> <b>Nombre:</b></h6>
+                                    <div class="form-group mx-sm-3 mb-2">
+                                        <label for="inputEditGroupName"
+                                            class="sr-only">NuevoNombre</label>
+                                        <input type="text"
+                                            class="form-control-plaintext"
+                                            id="inputEditGroupName" placeholder="${group.id}">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary">Editar
+                                    grupo</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col">
+                <p>
+                    <!-- boton eliminar grupo -->
+                    <br><button class="btn btn-primary" type="button"
+                        data-toggle="modal"
+                        data-target="#dialogoEliminarGrupo">Eliminar
+                        grupo</button>
+
+                <div class="modal fade" id="dialogoEliminarGrupo" tabindex="-1"
+                    role="dialog" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">
+                                    Eliminar grupo ${group.id}</h5>
+                                <button type="button" class="close" data-dismiss="modal"
+                                    aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-inline">
+                                    <h6> ¿Estás seguro/a de que deseas eliminar el
+                                        grupo ${group.id}? Esta acción no se puede deshacer</h6>
+
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">Cancelar</button>
+                                <button type="button"
+                                    class="btn btn-danger">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </p>
+                <p></p>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+    <!-- barra de filtrado -->
+    <div class="row">
+        <div class="col-8">
+            <input class="form-control mr-sm-2" type="search" placeholder="Filtrar"
+                aria-label="Search">
+        </div>
+        <div class="col">
+            <select class="browser-default custom-select">
+                <option selected="1">Nombre</option>
+                <option value="2">Localizacion</option>
+                <option value="3">ID</option>
+            </select>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-primary" type="submit">Filtrar</button>
+        </div>
+    </div>
+    <p></p>
+
+    <!-- opciones añadidas de filtrado -->
+    <button type="button" class="btn btn-secondary btn-sm">Localización: Pepe
+        ×</button>
+    <button type="button" class="btn btn-secondary btn-sm">Grupo: Salón ×</button>
+    <p></p>
+
+    <div class="row-4">
+        <h3>Incluidas en grupos</h3>
+        <script>
+            
+        </script>
+    </div>
+    <div class="row-4">
+        <br>
+        <h3>Grupos a los que añadir</h3>
+        <script>
+            
+        </script>
+    </div>
+</div>
+`);
+
+}
 
 // funcion para generar datos de ejemplo: impresoras, grupos, trabajos, ...
 // se puede no-usar, o modificar libremente
@@ -624,6 +805,7 @@ $(function () {
       // Rellenar panel de la derecha con el elemento seleccionado en cada pestaña
       updateCiDer(interfaceState.ciSelectedJob);
       updateImDer(interfaceState.imSelectedPrinter);
+      updateGrDer(interfaceState.grSelectedGroup);
 
     } catch (e) {
       console.log('Error actualizando', e);
@@ -657,5 +839,6 @@ window.createPrinterItem = createPrinterItem
 window.createGroupItem = createGroupItem
 window.updateCiDer = updateCiDer
 window.updateImDer = updateImDer
+window.updateGrDer = updateGrDer
 window.statusToSVG = statusToSVG
 
