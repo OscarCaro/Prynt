@@ -24,14 +24,14 @@ import * as Pmgr from './pmgrapi.js'
 //
 
 class InterfaceState {
-  constructor(ciSelectedJob, imSelectedPrinter, imFilters, grSelectedGroup){
+  constructor(ciSelectedJob, imSelectedPrinter, imFilters, grSelectedGroup) {
     // State of Cola de Impresion tab
     this.ciSelectedJob = ciSelectedJob;
 
     // State of Impresoras tab
     this.imSelectedPrinter = imSelectedPrinter;
     this.imFilters = imFilters || [];
-    
+
     // State of Grupos tab
     this.grSelectedGroup = grSelectedGroup;
   }
@@ -93,11 +93,11 @@ function statusToSVG(state, desiredSize) {
   }
 }
 
-function getPrinterGroups(printer){
+function getPrinterGroups(printer) {
   return Pmgr.globalState.groups.filter((g) => g.printers.indexOf(printer.id) > -1);
 }
 
-function getPrinterJobs(printer){
+function getPrinterJobs(printer) {
   return printer.queue.map((jId) => Pmgr.globalState.jobs.find((j) => j.id == jId));
 }
 
@@ -109,19 +109,19 @@ function createPrinterItem(printer) {
   let printerJobs = getPrinterJobs(printer);
   let printerJobsFormatted;
 
-  if (printerJobs.length <= 5){
-    printerJobsFormatted = printerJobs      
+  if (printerJobs.length <= 5) {
+    printerJobsFormatted = printerJobs
       .map((j) => `<span class="badge badge-secondary">${j.fileName}</span>`)
       .join(" ");
   }
   else {
-    let numExtra = printerJobs.length - 5; 
+    let numExtra = printerJobs.length - 5;
 
     printerJobsFormatted = printerJobs
-      .slice(0,5)                                                 
+      .slice(0, 5)
       .map((j) => `<span class="badge badge-secondary">${j.fileName}</span>`)
-      .join(" ");                                                
-      
+      .join(" ");
+
     printerJobsFormatted += (` <span class="badge badge-secondary">${"+" + numExtra}</span>`);
     /* Explanation:
         - slice => returns subarray from 0 to 5 (discard the rest of the jobs)
@@ -133,7 +133,7 @@ function createPrinterItem(printer) {
 
   return `
     <div class="card">
-      <div class="card-header" id="${hid}">
+      <div class="card-header" id="${printer.id}" onclick="updateImDer(this)">
         <h2 class="mb-0">
         <button class="btn w-100" type="button"
                 data-toggle="collapse" data-target="#${cid}",
@@ -172,19 +172,19 @@ function createJobItem(job) {
   let totalPrinters = Pmgr.globalState.printers;
   let printing;
 
-  for(let ij = 0; ij < totalPrinters.length; ij++) {
-    if(totalPrinters[ij].id == job.printer) {
+  for (let ij = 0; ij < totalPrinters.length; ij++) {
+    if (totalPrinters[ij].id == job.printer) {
       printing = totalPrinters[ij].queue[0] == job.id;
     }
   }
-  
+
   return `
       <div class="card" id="${job.id}" onclick="updateCiDer(this)">
         <div class="row">
             <div class="col-9">
             ${job.fileName}
             </div>
-            ${printing?`
+            ${printing ? `
               <div class="col">
                   <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-printer-fill"
                                     fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -195,7 +195,7 @@ function createJobItem(job) {
                                         d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z" />
                   </svg> <!-- icono impresora -->
                 </div>`: " "
-              }
+    }
                
             
         </div>
@@ -205,19 +205,19 @@ function createJobItem(job) {
 
 function createGroupItem(group) {
   // Lista de grupos a los que pertenece la impresora "printer"
-  
+
   var i, j;
   let groupPrintersNames = [];
 
-  for (i = 0; i < group.printers.length; i++){
-    for (j = 0; j < Pmgr.globalState.printers.length; j++){
-      if (group.printers[i] == Pmgr.globalState.printers[j].id){
+  for (i = 0; i < group.printers.length; i++) {
+    for (j = 0; j < Pmgr.globalState.printers.length; j++) {
+      if (group.printers[i] == Pmgr.globalState.printers[j].id) {
         groupPrintersNames.push(Pmgr.globalState.printers[j].name);
       }
     }
   }
 
- 
+
   return `
   <div class="card">
   <div class="row">
@@ -235,24 +235,24 @@ function createGroupItem(group) {
 }
 
 
-function updateCiDer(doc){
-            
+function updateCiDer(doc) {
+
   let nameDoc, idDoc, ownerDoc, printerDoc;
-  
+
   idDoc = doc.id;
   let totalJobs = Pmgr.globalState.jobs;
-  
-  
-  for(let ij = 0; ij < totalJobs.length; ij++) {
-      if(totalJobs[ij].id == idDoc) {
-          nameDoc = totalJobs[ij].fileName;
-          ownerDoc = totalJobs[ij].owner
-          printerDoc = totalJobs[ij].printer;
-      }
+
+
+  for (let ij = 0; ij < totalJobs.length; ij++) {
+    if (totalJobs[ij].id == idDoc) {
+      nameDoc = totalJobs[ij].fileName;
+      ownerDoc = totalJobs[ij].owner
+      printerDoc = totalJobs[ij].printer;
+    }
   }
 
-  $("#ciDerDatos").html( 
-      `<div class="col-6" align="center">
+  $("#ciDerDatos").html(
+    `<div class="col-6" align="center">
           <div class="row-4" style="font-size:xxx-large;">
               <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-printer-fill"
                   fill="currentColor" xmlns="http://www.w3.org/2000/svg">
@@ -323,6 +323,209 @@ function updateCiDer(doc){
           </div>
    </div>
   `);
+}
+
+function updateImDer(printer) {
+
+  let printerId = printer.id;
+  let totalPrinters = Pmgr.globalState.printers;
+  let printerName, printerModel, printerLoc, printerStatus;
+
+  
+  for (let ij = 0; ij < totalPrinters.length; ij++) {
+    if (totalPrinters[ij].id == printerId) {
+      printerName = totalPrinters[ij].alias;
+      printerModel = totalPrinters[ij].model;
+      printerLoc = totalPrinters[ij].location;
+      printerStatus = totalPrinters[ij].status;
+    }
+  }
+
+  $("#imDerDatos").html(
+    `
+    <div class="col">
+    <div class="row-4">
+        <div class="row">
+            <div class="col-9">
+                <h2>
+                    <!-- nombre archivo -->
+                    ${printerName}
+
+                    <!-- icono editar -->
+                    <button type="button" data-toggle="modal"
+                        data-target="#dialogoEditarImpresora">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16"
+                            class="bi bi-pencil-square" fill="currentColor"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                            <path fill-rule="evenodd"
+                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                        </svg>
+                    </button>
+                </h2>
+
+                <!-- Dialogo Modal Editar impresora -->
+                <div class="modal fade" id="dialogoEditarImpresora" tabindex="-1"
+                    role="dialog" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">
+                                    Editar impresora</h5>
+                                <button type="button" class="close" data-dismiss="modal"
+                                    aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-inline">
+                                    <h6> <b>Nombre:</b></h6>
+                                    <div class="form-group mx-sm-3 mb-2">
+                                        <label for="inputNewName"
+                                            class="sr-only">NuevoNombre</label>
+                                        <input type="text"
+                                            class="form-control-plaintext"
+                                            id="inputNewName" placeholder="Impresora">
+                                    </div>
+                                </form>
+
+                                <form class="form-inline">
+                                    <h6> <b>IP:</b></h6>
+                                    <div class="form-group mx-sm-3 mb-2">
+                                        <label for="inputNewName"
+                                            class="sr-only">NuevaIP</label>
+                                        <input type="text"
+                                            class="form-control-plaintext"
+                                            id="inputNewName" placeholder="192.168.1.0">
+                                    </div>
+                                </form>
+
+                                <form class="form-inline">
+                                    <h6> <b>Modelo:</b></h6>
+                                    <div class="form-group mx-sm-3 mb-2">
+                                        <label for="inputNewName"
+                                            class="sr-only">NuevoModelo</label>
+                                        <input type="text"
+                                            class="form-control-plaintext"
+                                            id="inputNewName" placeholder="">
+                                    </div>
+                                </form>
+
+                                <form class="form-inline">
+                                    <h6> <b>Localización:</b></h6>
+                                    <div class="form-group mx-sm-3 mb-2">
+                                        <label for="inputNewName"
+                                            class="sr-only">NuevaLocalizacion</label>
+                                        <input type="text"
+                                            class="form-control-plaintext"
+                                            id="inputNewName" placeholder="">
+                                    </div>
+                                </form>
+
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary">Editar
+                                    impresora</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col">
+                <p>
+                    <!-- boton eliminar impresora -->
+                    <br><button class="btn btn-primary" type="button"
+                        data-toggle="modal"
+                        data-target="#dialogoEliminarImpresora">Eliminar
+                        impresora</button>
+
+                <div class="modal fade" id="dialogoEliminarImpresora" tabindex="-1"
+                    role="dialog" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">
+                                    Eliminar impresora</h5>
+                                <button type="button" class="close" data-dismiss="modal"
+                                    aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-inline">
+                                    <h6> ¿Estás seguro/a de que deseas eliminar la
+                                        impresora? Esta acción no se puede deshacer</h6>
+
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-dismiss="modal">Cancelar</button>
+                                <button type="button"
+                                    class="btn btn-danger">Eliminar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                </p>
+                <p></p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-2">
+                <!-- icono impresora -->
+                ${statusToSVG(printerStatus, 4)}
+            </div>
+            <div class="col">
+                <!-- datos impresora -->
+                <h4>Modelo: ${printerModel}
+                    <br>Localización: ${printerLoc}
+                </h4>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <br>
+    <br>
+
+    <!-- barra de filtrado -->
+    <div class="row">
+        <div class="col">
+            <input class="form-control mr-sm-2" type="search" placeholder="Filtrar"
+                aria-label="Search">
+        </div>
+        <div class="col-2">
+            <button class="btn btn-primary" type="submit">Filtrar</button>
+        </div>
+    </div>
+
+    <p></p>
+
+    <div class="row-4">
+        <h3>Incluidas en grupos</h3>
+        <script>
+            
+        </script>
+
+    </div>
+    <div class="row-4">
+        <br>
+        <h3>Grupos a los que añadir</h3>
+        <script>
+            
+        </script>
+    </div>
+</div>
+`);
 }
 
 
@@ -409,12 +612,14 @@ $(function () {
       // y asi para cada cosa que pueda haber cambiado
 
       // Inicializar interfaceState
-      if (interfaceState == undefined){
+      if (interfaceState == undefined) {
+        // Primer elemento de cada lista seleccionado + 0 filtros
         interfaceState = new InterfaceState(Pmgr.globalState.jobs[0], Pmgr.globalState.printers[0], [], Pmgr.globalState.groups[0]);
       }
 
-      //
+      // Rellenar panel de la derecha con el elemento seleccionado en cada pestaña
       updateCiDer(interfaceState.ciSelectedJob);
+      updateImDer(interfaceState.imSelectedPrinter);
 
     } catch (e) {
       console.log('Error actualizando', e);
@@ -447,5 +652,6 @@ window.Pmgr = Pmgr;
 window.createPrinterItem = createPrinterItem
 window.createGroupItem = createGroupItem
 window.updateCiDer = updateCiDer
-
+window.updateImDer = updateImDer
+window.statusToSVG = statusToSVG
 
