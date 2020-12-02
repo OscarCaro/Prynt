@@ -93,7 +93,8 @@ function statusToSVG(state, desiredSize) {
   }
 }
 
-function getPrinterGroups(group) {
+// Return the list of printers that belong to the given group
+function getGroupPrinters(group) {
   for (let i = 0; i < Pmgr.globalState.groups.length; i++) {
     if (Pmgr.globalState.groups[i].id == group.id) {
       return Pmgr.globalState.groups[i].printers;
@@ -101,6 +102,12 @@ function getPrinterGroups(group) {
   }
 }
 
+// Return the list of groups that the given printer is in
+function getPrinterGroups(printer) {
+  return Pmgr.globalState.groups.filter((g) => g.printers.indexOf(printer.id) > -1);
+}
+
+// Return the list of jobs that the given printer has in the queue
 function getPrinterJobs(printer) {
   return printer.queue.map((jId) => Pmgr.globalState.jobs.find((j) => j.id == jId));
 }
@@ -212,23 +219,23 @@ function createGroupItem(group) {
   const hid = 'h_' + rid;
   const cid = 'c_' + rid;
 
-  let printersGroup = getPrinterGroups(group);
-  let printersGroupsFormatted;
+  let groupPrinters = getGroupPrinters(group);
+  let groupPrintersFormatted;
 
-  if (printersGroup <= 5) {
-    printersGroupsFormatted = printersGroup
+  if (groupPrinters <= 5) {
+    groupPrintersFormatted = groupPrinters
       .map((j) => `<span class="badge badge-secondary">${Pmgr.globalState.printers[j].alias}</span>`)
       .join(" ");
   }
   else {
-    let numExtra = printersGroup.length - 5;
+    let numExtra = groupPrinters.length - 5;
 
-    printersGroupsFormatted = printersGroup
+    groupPrintersFormatted = groupPrinters
       .slice(0, 5)
       .map((j) => `<span class="badge badge-secondary">${Pmgr.globalState.printers[j].alias}</span>`)
       .join(" ");
 
-    printersGroupsFormatted += (` <span class="badge badge-secondary">${"+" + numExtra}</span>`);
+    groupPrintersFormatted += (` <span class="badge badge-secondary">${"+" + numExtra}</span>`);
   }
 
   return `
@@ -254,7 +261,7 @@ function createGroupItem(group) {
       <div id="${cid}" class="collapse hide" aria-labelledby="${hid}
         data-parent="#imIzLista">
         <div class="card-body pcard">
-          ${printersGroupsFormatted}
+          ${groupPrintersFormatted}
         </div>
       </div>
     </div >
