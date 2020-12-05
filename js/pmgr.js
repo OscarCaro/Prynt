@@ -23,8 +23,10 @@ import * as Pmgr from './pmgrapi.js'
 // en respuesta a algún evento.
 //
 
+
+
 class InterfaceState {
-  constructor(ciSelectedJob, imSelectedPrinter, imFilters, grSelectedGroup) {
+  constructor(ciSelectedJob, imSelectedPrinter, imFilters, grSelectedGroup, grFilters) {
     // State of Cola de Impresion tab
     this.ciSelectedJob = ciSelectedJob;
 
@@ -34,18 +36,19 @@ class InterfaceState {
 
     // State of Grupos tab
     this.grSelectedGroup = grSelectedGroup;
+    this.grFilters = grFilters;
   }
 }
 
 class Filter {
   constructor(type, value, buttonId) {
-      this.type = type;
-      this.value = value;
-      this.buttonId = buttonId;   // To relate each filter with its button (used when button is clicked to remove filter)
+    this.type = type;
+    this.value = value;
+    this.buttonId = buttonId;   // To relate each filter with its button (used when button is clicked to remove filter)
   }
 }
 
-const filterType = {
+const FilterTypes = {
   NOMBRE: 'Nombre',
   IP: 'IP',
   MODELO: 'Modelo',
@@ -53,7 +56,68 @@ const filterType = {
   GRUPO: 'Grupo'
 }
 
+function getFilterTypeByIdx(idx) {
+  switch (Number(idx)) {
+    case 0: return FilterTypes.NOMBRE; break;
+    case 1: return FilterTypes.IP; break;
+    case 2: return FilterTypes.MODELO; break;
+    case 3: return FilterTypes.LOCALIZACION; break;
+    case 4: return FilterTypes.GRUPO; break;
+  }
+}
+
 let interfaceState = undefined;  // Initialized on update(), declared here for global access 
+
+// Asign actions to buttons (nasty global implementation):
+document.getElementById("imIzFilterBtn").addEventListener("click", addImFilter);
+
+function addImFilter() {
+  var inputText = document.getElementById("imIzFilterInput").value;
+  var filterTypeIdx = document.getElementById("imIzFilterType").value;
+
+  let filter = new Filter(getFilterTypeByIdx(filterTypeIdx), inputText, -1);
+
+  interfaceState.imFilters.push(filter);
+
+  console.log("Filtro añadido. Tipo:" + getFilterTypeByIdx(filterTypeIdx) + " Valor: " + inputText);
+  update();
+}
+
+function applyImFilters() {
+  if (interfaceState != undefined && interfaceState.imFilters.length > 0) {
+    let filteredList = Pmgr.globalState.printers;
+    let filters = interfaceState.imFilters;
+
+    for (let i = 0; i < filters.length; i++) {
+      switch (filters[i].type) {
+        case FilterTypes.NOMBRE:
+          filteredList = filteredList.filter((p) => p.alias == filters[i].value);
+          break;
+        case FilterTypes.IP:
+          filteredList = filteredList.filter((p) => p.ip == filters[i].value);
+          break;
+        case FilterTypes.MODELO:
+          filteredList = filteredList.filter((p) => p.model == filters[i].value);
+          break;
+        case FilterTypes.LOCALIZACION:
+          filteredList = filteredList.filter((p) => p.location == filters[i].value);
+          break;
+        case FilterTypes.GRUPO:
+          filteredList = filteredList.filter((p) => p.group == filters[i].value);
+          break;
+      }
+    }
+
+    // To update the right panel:
+    if (filteredList.length > 0) { interfaceState.imSelectedPrinter = filteredList[0]; }
+    else { interfaceState.imSelectedPrinter = undefined; }
+
+    return filteredList;
+  }
+  else {
+    return Pmgr.globalState.printers;
+  }
+}
 
 
 function statusToSVG(state, desiredSize) {
@@ -389,6 +453,11 @@ function updateCiDer(doc) {
 }
 
 function updateImDer(printer) {
+
+  if (printer == undefined) {       // Error message when there's no printer to be displayed
+    $("#imDerDatos").html(
+      ` <b>Ninguna impresora seleccionada</b>  `);
+  }
 
   interfaceState.imSelectedPrinter = printer.id;
 
@@ -831,36 +900,39 @@ async function populate(minPrinters, maxPrinters, minGroups, maxGroups, jobCount
 // Generalmente de la forma $("selector").cosaQueSucede(...)
 //
 
-$(function () {
+// funcion de actualización de ejemplo. Llámala para refrescar interfaz
+function update(result) {
+  try {
+    // vaciamos un contenedor
+    $("#ciIzLista").empty();
+    $("#imIzLista").empty();
+    $("#grIzLista").empty();
 
-  // funcion de actualización de ejemplo. Llámala para refrescar interfaz
-  function update(result) {
-    try {
-      // vaciamos un contenedor
-      $("#imIzLista").empty();
-      $("#grIzLista").empty();
-      // y lo volvemos a rellenar con su nuevo contenido
-      Pmgr.globalState.jobs.forEach(j => $("#ciIzLista").append(createJobItem(j)));
-      Pmgr.globalState.printers.forEach(m => $("#imIzLista").append(createPrinterItem(m)));
-      Pmgr.globalState.groups.forEach(g => $("#grIzLista").append(createGroupItem(g)));
-      // y asi para cada cosa que pueda haber cambiado
+    // aplicamos filtros activos
+    let filteredPrinterList = applyImFilters();
 
-      // Inicializar interfaceState
-      if (interfaceState == undefined) {
-        // Primer elemento de cada lista seleccionado + 0 filtros
-        interfaceState = new InterfaceState(Pmgr.globalState.jobs[0], Pmgr.globalState.printers[0], [], Pmgr.globalState.groups[0]);
-      }
+    // y lo volvemos a rellenar con su nuevo contenido
+    Pmgr.globalState.jobs.forEach(j => $("#ciIzLista").append(createJobItem(j)));
+    filteredPrinterList.forEach(m => $("#imIzLista").append(createPrinterItem(m)));
+    Pmgr.globalState.groups.forEach(g => $("#grIzLista").append(createGroupItem(g)));
 
-      // Rellenar panel de la derecha con el elemento seleccionado en cada pestaña
-      updateCiDer(interfaceState.ciSelectedJob);
-      updateImDer(interfaceState.imSelectedPrinter);
-      updateGrDer(interfaceState.grSelectedGroup);
-
-    } catch (e) {
-      console.log('Error actualizando', e);
+    // Inicializar interfaceState
+    if (interfaceState == undefined) {
+      // Primer elemento de cada lista seleccionado + 0 filtros
+      interfaceState = new InterfaceState(Pmgr.globalState.jobs[0], Pmgr.globalState.printers[0], [], Pmgr.globalState.groups[0], []);
     }
-  }
 
+    // Rellenar panel de la derecha con el elemento seleccionado en cada pestaña
+    updateCiDer(interfaceState.ciSelectedJob);
+    updateImDer(interfaceState.imSelectedPrinter);
+    updateGrDer(interfaceState.grSelectedGroup);
+
+  } catch (e) {
+    console.log('Error actualizando', e);
+  }
+}
+
+$(function () {
 
   // Servidor a utilizar. También puedes lanzar tú el tuyo en local (instrucciones en Github)
   const serverUrl = "http://localhost:8080/api/";

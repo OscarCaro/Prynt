@@ -149,20 +149,20 @@
                             <!-- barra de busqueda -->
                             <nav class="navbar">
 
-                                <form class="form-inline">
-                                    <input class="form-control col-5 mr-sm-2" type="search" placeholder="Impresoras"
-                                        aria-label="Search">
+                                <div class="row w-100">
+                                    <input class="form-control col-5 mr-sm-2" id="imIzFilterInput" type="search" 
+                                    placeholder="Impresoras" aria-label="Search">
                                     <div>
-                                        <select class="browser-default custom-select mr-sm-2">
-                                            <option selected>Nombre</option>
+                                        <select class="browser-default custom-select mr-sm-2" id="imIzFilterType">
+                                            <option value="0" selected>Nombre</option>
                                             <option value="1">IP</option>
                                             <option value="2">Localizacion</option>
                                             <option value="3">Modelo</option>
                                             <option value="4">Grupo</option>
                                         </select>
                                     </div>
-                                    <button class="btn btn-primary" type="submit">Filtrar</button>
-                                </form>
+                                    <button class="btn btn-primary" id="imIzFilterBtn">Filtrar</button>
+                                </div>
                             </nav>
 
                             <div class="px-4">
