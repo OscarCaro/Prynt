@@ -37,6 +37,22 @@ class InterfaceState {
   }
 }
 
+class Filter {
+  constructor(type, value, buttonId) {
+      this.type = type;
+      this.value = value;
+      this.buttonId = buttonId;   // To relate each filter with its button (used when button is clicked to remove filter)
+  }
+}
+
+const filterType = {
+  NOMBRE: 'Nombre',
+  IP: 'IP',
+  MODELO: 'Modelo',
+  LOCALIZACION: 'Localización',
+  GRUPO: 'Grupo'
+}
+
 let interfaceState = undefined;  // Initialized on update(), declared here for global access 
 
 
