@@ -565,7 +565,7 @@ function updateImDer(printerId) {
                                             class="sr-only">NuevaLocalizacion</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputNewLocation" value="${printer.loc}">
+                                            id="inputNewLocation" value="${printer.location}">
                                     </div>
                                 </form>
 
@@ -634,7 +634,7 @@ function updateImDer(printerId) {
                 <h4>     ID: ${printer.id}
                     <br> IP: ${printer.ip}
                     <br> Modelo: ${printer.model}
-                    <br> Localización: ${printer.loc}
+                    <br> Localización: ${printer.location}
 
                 </h4>
             </div>
