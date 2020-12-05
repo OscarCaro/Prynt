@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
         integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
 
+    <script src="js/pmgr.js"></script>
+
 </head>
 
 <body>
@@ -150,8 +152,8 @@
                             <nav class="navbar">
 
                                 <div class="row w-100">
-                                    <input class="form-control col-5 mr-sm-2" id="imIzFilterInput" type="search" 
-                                    placeholder="Impresoras" aria-label="Search">
+                                    <input class="form-control col-5 mr-sm-2" id="imIzFilterInput" type="search"
+                                        placeholder="Impresoras" aria-label="Search">
                                     <div>
                                         <select class="browser-default custom-select mr-sm-2" id="imIzFilterType">
                                             <option value="0" selected>Nombre</option>
@@ -165,18 +167,8 @@
                                 </div>
                             </nav>
 
-                            <div class="px-4">
-                                <!-- opciones añadidas de filtrado -->
-                                <button type="button" class="btn btn-secondary btn-sm filter-btn-space"><b>Localización:</b> Salón
-                                    ×</button>
-                                <button type="button" class="btn btn-secondary btn-sm filter-btn-space"><b>Grupo:</b> Grupo3 ×</button>
-                                <button type="button" class="btn btn-secondary btn-sm filter-btn-space"><b>Grupo:</b> Grupo3 ×</button>
-                                <button type="button" class="btn btn-secondary btn-sm filter-btn-space"><b>Grupo:</b> Grupo3 ×</button>
-                                <button type="button" class="btn btn-secondary btn-sm filter-btn-space"><b>Grupo:</b> Grupo3 ×</button>
-                                <button type="button" class="btn btn-secondary btn-sm filter-btn-space"><b>Grupo:</b> Grupo3 ×</button>
-                                <button type="button" class="btn btn-secondary btn-sm filter-btn-space"><b>Grupo:</b> Grupo3 ×</button>
-
-
+                            <div class="px-4" id="imIzFilterList">
+                                <!-- espacio para lista de filtros activos -->
                             </div>
 
                             <!-- lista de grupos -->

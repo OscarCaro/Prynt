@@ -26,16 +26,16 @@ import * as Pmgr from './pmgrapi.js'
 
 
 class InterfaceState {
-  constructor(ciSelectedJob, imSelectedPrinter, imFilters, grSelectedGroup, grFilters) {
+  constructor(ciSelectedJobId, imSelectedPrinterId, imFilters, grSelectedGroupId, grFilters) {
     // State of Cola de Impresion tab
-    this.ciSelectedJob = ciSelectedJob;
+    this.ciSelectedJobId = ciSelectedJobId;
 
     // State of Impresoras tab
-    this.imSelectedPrinter = imSelectedPrinter;
+    this.imSelectedPrinterId = imSelectedPrinterId;
     this.imFilters = imFilters || [];
 
     // State of Grupos tab
-    this.grSelectedGroup = grSelectedGroup;
+    this.grSelectedGroupId = grSelectedGroupId;
     this.grFilters = grFilters;
   }
 }
@@ -75,11 +75,19 @@ function addImFilter() {
   var inputText = document.getElementById("imIzFilterInput").value;
   var filterTypeIdx = document.getElementById("imIzFilterType").value;
 
-  let filter = new Filter(getFilterTypeByIdx(filterTypeIdx), inputText, -1);
+  let filter = new Filter(getFilterTypeByIdx(filterTypeIdx), inputText, Math.floor(Math.random() * 1000000));
 
   interfaceState.imFilters.push(filter);
 
   console.log("Filtro añadido. Tipo:" + getFilterTypeByIdx(filterTypeIdx) + " Valor: " + inputText);
+  update();
+}
+
+function removeImFilter(button) {
+  let idx = interfaceState.imFilters.indexOf(interfaceState.imFilters.find((f) => f.buttonId == button.id));
+  if (idx > -1) {
+    interfaceState.imFilters.splice(idx, 1);
+  }
   update();
 }
 
@@ -109,13 +117,29 @@ function applyImFilters() {
     }
 
     // To update the right panel:
-    if (filteredList.length > 0) { interfaceState.imSelectedPrinter = filteredList[0]; }
-    else { interfaceState.imSelectedPrinter = undefined; }
+    if (filteredList.length > 0) { interfaceState.imSelectedPrinterId = filteredList[0].id; }
+    else { interfaceState.imSelectedPrinterId = -1; }
 
     return filteredList;
   }
   else {
     return Pmgr.globalState.printers;
+  }
+}
+
+
+function updateImIzFiltros() {
+  $("#imIzFilterList").empty();
+  let filters = interfaceState.imFilters;
+
+  for (let i = 0; i < filters.length; i++) {
+    $("#imIzFilterList").append(
+      `
+      <button type="button" class="btn btn-secondary btn-sm filter-btn-space" id="${filters[i].buttonId}" onclick="removeImFilter(this)">
+        ${filters[i].type}: <b>${filters[i].value}</b> ×
+      </button>
+      `
+    );
   }
 }
 
@@ -224,7 +248,7 @@ function createPrinterItem(printer) {
 
   return `
     <div class="card">
-      <div class="card-header" id="${printer.id}" onclick="updateImDer(this)">
+      <div class="card-header" id="${printer.id}" onclick="updateImDer(${printer.id})">
         <h2 class="mb-0">
         <button class="btn w-100" type="button"
                 data-toggle="collapse" data-target="#${cid}",
@@ -270,7 +294,7 @@ function createJobItem(job) {
   }
 
   return `
-      <div class="card" id="${job.id}" onclick="updateCiDer(this)">
+      <div class="card" id="${job.id}" onclick="updateCiDer(${job.id})">
         <div class="row">
             <div class="col-9">
             ${job.fileName}
@@ -320,7 +344,7 @@ function createGroupItem(group) {
 
   return `
     <div class="card">
-      <div class="card-header" id="${group.id}" onclick="updateGrDer(this)">
+      <div class="card-header" id="${group.id}" onclick="updateGrDer(${group.id})">
         <h2 class="mb-0">
         <button class="btn w-100" type="button"
                 data-toggle="collapse" data-target="#${cid}",
@@ -349,33 +373,29 @@ function createGroupItem(group) {
 
 }
 
-function updateCiDer(doc) {
+function updateCiDer(jobId) {
 
-  interfaceState.ciSelectedJob = doc;
+  let job = Pmgr.globalState.jobs.find((j) => j.id == jobId);
 
-  let nameDoc, idDoc, ownerDoc, printerDoc;
+  if (job == undefined) {       // Error message when there's no job to be displayed
+    $("#ciDerDatos").html(
+      ` <b>Ningun trabajo seleccionado</b>  `);
 
-  idDoc = doc.id;
-  let totalJobs = Pmgr.globalState.jobs;
-
-  for (let ij = 0; ij < totalJobs.length; ij++) {
-    if (totalJobs[ij].id == idDoc) {
-      nameDoc = totalJobs[ij].fileName;
-      ownerDoc = totalJobs[ij].owner
-      printerDoc = totalJobs[ij].printer;
-    }
+    interfaceState.ciSelectedJobId = -1;
+    return;
   }
 
+  interfaceState.ciSelectedJobId = job.id;   // Keep track of the selected job 
+
+  // Guess if job is being printed at the moment:
   let totalPrinters = Pmgr.globalState.printers;
   let printing;
 
-  for (let ij = 0; ij < totalPrinters.length; ij++) {
-    if (totalPrinters[ij].id == printerDoc) {
-      printing = totalPrinters[ij].queue[0] == idDoc;
+  for (let i = 0; i < totalPrinters.length; i++) {
+    if (totalPrinters[i].id == job.printer && totalPrinters[i].queue.length > 0) {
+      printing = totalPrinters[i].queue[0] == job.id;
     }
   }
-
-  console.log("El documento seleccionado tiene icono: " + printing)
 
   $("#ciDerDatos").html(
     `<div class="col-6" align="center">
@@ -391,12 +411,12 @@ function updateCiDer(doc) {
               </svg> <!-- icono impresora -->
           `: ""}
               <!-- nombre archivo -->
-              ${nameDoc}
+              ${job.fileName}
           </div>
           <div class="row-4" style="font-size:x-large;">
-              ID: ${idDoc}
-              <br>Propietario: ${ownerDoc}
-              <br>Impresora: ${printerDoc}
+              ID: ${job.id}
+              <br>Propietario: ${job.owner}
+              <br>Impresora: ${job.printer}
           </div>
           <div class="row-4">
               <br><button class="btn btn-primary" type="button" data-toggle="modal"
@@ -408,7 +428,7 @@ function updateCiDer(doc) {
                       <div class="modal-content">
                           <div class="modal-header">
                               <h5 class="modal-title" id="exampleModalLabel">
-                                  Cancelar la impresión ${nameDoc}</h5>
+                                  Cancelar la impresión ${job.fileName}</h5>
                               <button type="button" class="close" data-dismiss="modal"
                                   aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
@@ -417,7 +437,7 @@ function updateCiDer(doc) {
                           <div class="modal-body">
                               <form class="form-inline">
                                   <h6> ¿Estás seguro/a de que deseas cancelar el
-                                      trabajo ${nameDoc}?
+                                      trabajo ${job.fileName}?
                                   </h6>
 
                               </form>
@@ -452,29 +472,19 @@ function updateCiDer(doc) {
   `);
 }
 
-function updateImDer(printer) {
+function updateImDer(printerId) {
+
+  let printer = Pmgr.globalState.printers.find((p) => p.id == printerId);
 
   if (printer == undefined) {       // Error message when there's no printer to be displayed
     $("#imDerDatos").html(
       ` <b>Ninguna impresora seleccionada</b>  `);
+
+    interfaceState.imSelectedPrinterId = -1;
+    return;
   }
 
-  interfaceState.imSelectedPrinter = printer.id;
-
-  let printerId = printer.id;
-  let totalPrinters = Pmgr.globalState.printers;
-  let printerName, printerModel, printerLoc, printerStatus, printerIp;
-
-
-  for (let ij = 0; ij < totalPrinters.length; ij++) {
-    if (totalPrinters[ij].id == printerId) {
-      printerName = totalPrinters[ij].alias;
-      printerIp = totalPrinters[ij].ip;
-      printerModel = totalPrinters[ij].model;
-      printerLoc = totalPrinters[ij].location;
-      printerStatus = totalPrinters[ij].status;
-    }
-  }
+  interfaceState.imSelectedPrinterId = printer.id;   // Keep track of the selected printer 
 
   $("#imDerDatos").html(
     `
@@ -484,7 +494,7 @@ function updateImDer(printer) {
             <div class="col-9">
                 <h2>
                     <!-- nombre archivo -->
-                    ${printerName}
+                    ${printer.alias}
 
                     <!-- icono editar -->
                     <button type="button" data-toggle="modal"
@@ -508,7 +518,7 @@ function updateImDer(printer) {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">
-                                    Editar impresora ${printerName}</h5>
+                                    Editar impresora ${printer.alias}</h5>
                                 <button type="button" class="close" data-dismiss="modal"
                                     aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -522,7 +532,7 @@ function updateImDer(printer) {
                                             class="sr-only">NuevoNombre</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputNewName" value=${printerName}>
+                                            id="inputNewName" value=${printer.alias}>
                                     </div>
                                 </form>
 
@@ -533,7 +543,7 @@ function updateImDer(printer) {
                                             class="sr-only">NuevaIP</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputEditIP" value=${printerIp}>
+                                            id="inputEditIP" value=${printer.ip}>
                                     </div>
                                 </form>
 
@@ -544,7 +554,7 @@ function updateImDer(printer) {
                                             class="sr-only">NuevoModelo</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputEditModel" value=${printerModel}>
+                                            id="inputEditModel" value=${printer.model}>
                                     </div>
                                 </form>
 
@@ -555,7 +565,7 @@ function updateImDer(printer) {
                                             class="sr-only">NuevaLocalizacion</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputNewLocation" value="${printerLoc}">
+                                            id="inputNewLocation" value="${printer.loc}">
                                     </div>
                                 </form>
 
@@ -587,7 +597,7 @@ function updateImDer(printer) {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">
-                                    Eliminar impresora ${printerName}</h5>
+                                    Eliminar impresora ${printer.name}</h5>
                                 <button type="button" class="close" data-dismiss="modal"
                                     aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -596,7 +606,7 @@ function updateImDer(printer) {
                             <div class="modal-body">
                                 <form class="form-inline">
                                     <h6> ¿Estás seguro/a de que deseas eliminar la
-                                        impresora ${printerName}? Esta acción no se puede deshacer</h6>
+                                        impresora ${printer.name}? Esta acción no se puede deshacer</h6>
 
                                 </form>
                             </div>
@@ -617,14 +627,14 @@ function updateImDer(printer) {
         <div class="row">
             <div class="col-2">
                 <!-- icono impresora -->
-                ${statusToSVG(printerStatus, 4)}
+                ${statusToSVG(printer.status, 4)}
             </div>
             <div class="col">
                 <!-- datos impresora -->
-                <h4>     ID: ${printerId}
-                    <br> IP: ${printerIp}
-                    <br> Modelo: ${printerModel}
-                    <br> Localización: ${printerLoc}
+                <h4>     ID: ${printer.id}
+                    <br> IP: ${printer.ip}
+                    <br> Modelo: ${printer.model}
+                    <br> Localización: ${printer.loc}
 
                 </h4>
             </div>
@@ -667,20 +677,20 @@ function updateImDer(printer) {
 
 }
 
-function updateGrDer(group) {
 
-  interfaceState.grSelectedGroup = group.id;
+function updateGrDer(groupId) {
 
-  let groupId = group.id;
-  let totalGroups = Pmgr.globalState.groups;
-  let groupName;
+  let group = Pmgr.globalState.groups.find((g) => g.id == groupId);
 
+  if (group == undefined) {       // Error message when there's no group to be displayed
+    $("#grDerDatos").html(
+      ` <b>Ningun grupo seleccionado</b>  `);
 
-  for (let ij = 0; ij < totalGroups.length; ij++) {
-    if (totalGroups[ij].id == groupId) {
-      groupName = totalGroups[ij].name;
-    }
+    interfaceState.grSelectedGroupId = -1;
+    return;
   }
+
+  interfaceState.grSelectedGroupId = group.id;   // Keep track of the selected group 
 
   $("#grDerDatos").html(
     `
@@ -690,7 +700,7 @@ function updateGrDer(group) {
             <div class="col-9">
                 <h2>
                     <!-- nombre grupo -->
-                    ${groupName}
+                    ${group.name}
 
                     <!-- icono editar -->
                     <button type="button" data-toggle="modal"
@@ -714,7 +724,7 @@ function updateGrDer(group) {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">
-                                    Editar grupo ${groupName}</h5>
+                                    Editar grupo ${group.name}</h5>
                                 <button type="button" class="close" data-dismiss="modal"
                                     aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -728,7 +738,7 @@ function updateGrDer(group) {
                                             class="sr-only">NuevoNombre</label>
                                         <input type="text"
                                             class="form-control-plaintext"
-                                            id="inputEditGroupName" value="${groupName}">
+                                            id="inputEditGroupName" value="${group.name}">
                                     </div>
                                 </form>
                             </div>
@@ -758,7 +768,7 @@ function updateGrDer(group) {
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalLabel">
-                                    Eliminar grupo ${groupName}</h5>
+                                    Eliminar grupo ${group.name}</h5>
                                 <button type="button" class="close" data-dismiss="modal"
                                     aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -767,7 +777,7 @@ function updateGrDer(group) {
                             <div class="modal-body">
                                 <form class="form-inline">
                                     <h6> ¿Estás seguro/a de que deseas eliminar el
-                                        grupo ${groupName}? Esta acción no se puede deshacer</h6>
+                                        grupo ${group.name}? Esta acción no se puede deshacer</h6>
 
                                 </form>
                             </div>
@@ -919,13 +929,16 @@ function update(result) {
     // Inicializar interfaceState
     if (interfaceState == undefined) {
       // Primer elemento de cada lista seleccionado + 0 filtros
-      interfaceState = new InterfaceState(Pmgr.globalState.jobs[0], Pmgr.globalState.printers[0], [], Pmgr.globalState.groups[0], []);
+      interfaceState = new InterfaceState(Pmgr.globalState.jobs[0].id, Pmgr.globalState.printers[0].id, [], Pmgr.globalState.groups[0].id, []);
     }
 
     // Rellenar panel de la derecha con el elemento seleccionado en cada pestaña
-    updateCiDer(interfaceState.ciSelectedJob);
-    updateImDer(interfaceState.imSelectedPrinter);
-    updateGrDer(interfaceState.grSelectedGroup);
+    updateCiDer(interfaceState.ciSelectedJobId);
+    updateImDer(interfaceState.imSelectedPrinterId);
+    updateGrDer(interfaceState.grSelectedGroupId);
+
+    // Rellenar lista de botones de filtro en ImIz
+    updateImIzFiltros();
 
   } catch (e) {
     console.log('Error actualizando', e);
@@ -962,4 +975,5 @@ window.updateCiDer = updateCiDer
 window.updateImDer = updateImDer
 window.updateGrDer = updateGrDer
 window.statusToSVG = statusToSVG
+window.removeImFilter = removeImFilter
 
