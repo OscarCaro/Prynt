@@ -725,9 +725,9 @@ function updateGrDer(group) {
     <p></p>
 
     <!-- opciones añadidas de filtrado -->
-    <button type="button" class="btn btn-secondary btn-sm">Localización: Pepe
+    <button type="button" class="btn btn-secondary btn-sm filter-btn-space">Localización: Pepe
         ×</button>
-    <button type="button" class="btn btn-secondary btn-sm">Grupo: Salón ×</button>
+    <button type="button" class="btn btn-secondary btn-sm filter-btn-space">Grupo: Salón ×</button>
     <p></p>
 
     <div class="row-4">

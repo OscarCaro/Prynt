@@ -27,3 +27,9 @@
     height: 600px;
     overflow: auto;
 }
+
+.filter-btn-space{
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+    margin-left: 2px;
+}
