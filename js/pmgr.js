@@ -281,6 +281,24 @@ function createPrinterItem(printer) {
     </div >
         `;
 }
+/*
+En el campo se le añade algo para que cuando ese campo se modifique realice un update para validarlo. Si no es valido se le pone un valor 
+a un parámetro (onsubmit creo) a false(o algo asi) lo que hace que cualquier boton de submit se desactive(esto creo que es automatico no lo tenemos que hacer nosotros)
+ y podemos aprovechar para mostrar cual es la razon por la que no se permite subir el contenido de los campos
+*/
+function addPrinter() {
+   let nombre = $("#inputNuevoNombreImp").val();
+   let ip = $("#inputNuevaIP").val();
+   let localizacion = $("#inputNuevaLocalizacion").val();
+   let modelo = $("#inputNuevoModelo").val();
+   let o = {alias: nombre, ip, location: localizacion, model: modelo};
+  console.log("uwu" + ip);
+   // faltaría validar -- por ejemplo, la IP
+  let valid = true;
+   if (valid) {
+    Pmgr.addPrinter(o).then(update);
+   }
+}
 
 function createJobItem(job) {
 
@@ -927,18 +945,19 @@ function update(result) {
     Pmgr.globalState.groups.forEach(g => $("#grIzLista").append(createGroupItem(g)));
 
     // Inicializar interfaceState
-    if (interfaceState == undefined) {
+    if (interfaceState == undefined && Pmgr.globalState.printers.length > 0 && Pmgr.globalState.groups.length > 0 && Pmgr.globalState.jobs.length > 0) {
       // Primer elemento de cada lista seleccionado + 0 filtros
       interfaceState = new InterfaceState(Pmgr.globalState.jobs[0].id, Pmgr.globalState.printers[0].id, [], Pmgr.globalState.groups[0].id, []);
     }
 
+    if (interfaceState != undefined) {
     // Rellenar panel de la derecha con el elemento seleccionado en cada pestaña
-    updateCiDer(interfaceState.ciSelectedJobId);
-    updateImDer(interfaceState.imSelectedPrinterId);
-    updateGrDer(interfaceState.grSelectedGroupId);
-
-    // Rellenar lista de botones de filtro en ImIz
-    updateImIzFiltros();
+      updateCiDer(interfaceState.ciSelectedJobId);
+      updateImDer(interfaceState.imSelectedPrinterId);
+      updateGrDer(interfaceState.grSelectedGroupId);
+      // Rellenar lista de botones de filtro en ImIz
+      updateImIzFiltros();
+    }
 
   } catch (e) {
     console.log('Error actualizando', e);
@@ -948,14 +967,15 @@ function update(result) {
 $(function () {
 
   // Servidor a utilizar. También puedes lanzar tú el tuyo en local (instrucciones en Github)
-  const serverUrl = "http://localhost:8080/api/";
+  const serverUrl = "http://gin.fdi.ucm.es/iu/api/";
   Pmgr.connect(serverUrl);
 
   // ejemplo de login
-  Pmgr.login("HDY0IQ", "cMbwKQ").then(d => {
+  Pmgr.login("g3", "Grupo3Patata").then(d => {
     if (d !== undefined) {
-      const u = Gb.resolve("HDY0IQ");
-      console.log("login ok!", u);
+      console.log("login ok!");
+      update();
+      // si login OK, entra siempre por aquí
     } else {
       console.log(`error en login(revisa la URL: ${serverUrl}, y verifica que está vivo)`);
       console.log("Generando datos de ejemplo para uso en local...")
@@ -964,10 +984,12 @@ $(function () {
       update();
     }
   });
+
+  $("#botonAddImpresora").click(e => addPrinter($(e.target)));
 });
 
 // cosas que exponemos para usarlas desde la consola
-window.populate = populate
+window.update = update
 window.Pmgr = Pmgr;
 window.createPrinterItem = createPrinterItem
 window.createGroupItem = createGroupItem
