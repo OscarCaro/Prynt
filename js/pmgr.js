@@ -287,17 +287,17 @@ a un parámetro (onsubmit creo) a false(o algo asi) lo que hace que cualquier bo
  y podemos aprovechar para mostrar cual es la razon por la que no se permite subir el contenido de los campos
 */
 function addPrinter() {
-   let nombre = $("#inputNuevoNombreImp").val();
-   let ip = $("#inputNuevaIP").val();
-   let localizacion = $("#inputNuevaLocalizacion").val();
-   let modelo = $("#inputNuevoModelo").val();
-   let o = {alias: nombre, ip, location: localizacion, model: modelo};
+  let nombre = $("#inputNuevoNombreImp").val();
+  let ip = $("#inputNuevaIP").val();
+  let localizacion = $("#inputNuevaLocalizacion").val();
+  let modelo = $("#inputNuevoModelo").val();
+  let o = { alias: nombre, ip, location: localizacion, model: modelo };
   console.log("uwu" + ip);
-   // faltaría validar -- por ejemplo, la IP
+  // faltaría validar -- por ejemplo, la IP
   let valid = true;
-   if (valid) {
+  if (valid) {
     Pmgr.addPrinter(o).then(update);
-   }
+  }
 }
 
 function createJobItem(job) {
@@ -945,19 +945,28 @@ function update(result) {
     Pmgr.globalState.groups.forEach(g => $("#grIzLista").append(createGroupItem(g)));
 
     // Inicializar interfaceState
-    if (interfaceState == undefined && Pmgr.globalState.printers.length > 0 && Pmgr.globalState.groups.length > 0 && Pmgr.globalState.jobs.length > 0) {
-      // Primer elemento de cada lista seleccionado + 0 filtros
-      interfaceState = new InterfaceState(Pmgr.globalState.jobs[0].id, Pmgr.globalState.printers[0].id, [], Pmgr.globalState.groups[0].id, []);
+    if (interfaceState == undefined) {
+      // -1 means nothing selected, [] means no active filters
+      interfaceState = new InterfaceState(-1, -1, [], -1, []);
+
+      if (Pmgr.globalState.jobs.length > 0) {
+        interfaceState.ciSelectedJobId = Pmgr.globalState.jobs[0].id;
+      }
+      if (Pmgr.globalState.printers.length > 0) {
+        interfaceState.imSelectedPrinterId = Pmgr.globalState.printers[0].id;
+      }
+      if (Pmgr.globalState.groups.length > 0) {
+        interfaceState.grSelectedGroupId = Pmgr.globalState.groups[0].id;
+      }
     }
 
-    if (interfaceState != undefined) {
     // Rellenar panel de la derecha con el elemento seleccionado en cada pestaña
-      updateCiDer(interfaceState.ciSelectedJobId);
-      updateImDer(interfaceState.imSelectedPrinterId);
-      updateGrDer(interfaceState.grSelectedGroupId);
-      // Rellenar lista de botones de filtro en ImIz
-      updateImIzFiltros();
-    }
+    updateCiDer(interfaceState.ciSelectedJobId);
+    updateImDer(interfaceState.imSelectedPrinterId);
+    updateGrDer(interfaceState.grSelectedGroupId);
+    // Rellenar lista de botones de filtro en ImIz
+    updateImIzFiltros();
+    
 
   } catch (e) {
     console.log('Error actualizando', e);
