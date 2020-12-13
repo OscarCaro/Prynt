@@ -145,9 +145,8 @@ function updateImIzFiltros() {
 
 
 function statusToSVG(state, desiredSize) {
-  const PS = Pmgr.PrinterStates;
   switch (state) {
-    case PS.PRINTING:
+    case 'PRINTING':
       // Source: https://icons.getbootstrap.com/
       return `
       <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-printer-fill"
@@ -161,7 +160,7 @@ function statusToSVG(state, desiredSize) {
       `;
       break;
 
-    case PS.PAUSED:
+    case 'PAUSED':
       // Source: https://icons.getbootstrap.com/
       return `
       <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-pause-fill" 
@@ -171,7 +170,7 @@ function statusToSVG(state, desiredSize) {
           `;
       break;
 
-    case PS.NO_INK:
+    case 'NO_INK':
       // Source: https://icons.getbootstrap.com/
       return `
       <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-droplet-half" 
@@ -182,7 +181,7 @@ function statusToSVG(state, desiredSize) {
           `;
       break;
 
-    case PS.NO_PAPER:
+    case 'NO_PAPER':
       // Source: https://icons.getbootstrap.com/
       return `
       <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-file-earmark-excel-fill" 
@@ -291,13 +290,54 @@ function addPrinter() {
   let ip = $("#inputNuevaIP").val();
   let localizacion = $("#inputNuevaLocalizacion").val();
   let modelo = $("#inputNuevoModelo").val();
-  let o = { alias: nombre, ip, location: localizacion, model: modelo };
+  let o = { alias: nombre, ip, location: localizacion, model: modelo, status: 'paused' };
   console.log("uwu" + ip);
   // faltaría validar -- por ejemplo, la IP
   let valid = true;
   if (valid) {
     Pmgr.addPrinter(o).then(update);
   }
+}
+
+function addGroup() {
+  let nombre = $("#inputNewGroupName").val();
+  Pmgr.addGroup({ name: nombre }).then(update);
+}
+
+function printerIsOnGroup(printerName, groupName) {
+  for (var i = 0; i < Pmgr.globalState.groups.length; i++) {
+    if (Pmgr.globalState.groups[i].name == groupName) {
+      for (var j = 0; j < Pmgr.globalState.groups[i].printers.length; j++) {
+        if (Pmgr.globalState.groups[i].printers[j].name == printerName) {
+            return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function addPrintertoGroup(printer){
+    
+}
+
+function listaGruposIncluidos(printer) {
+  
+  let botones = "";
+  for (var i = 0; i < Pmgr.globalState.groups.length; i++) {
+    if(printerIsOnGroup(printer,Pmgr.globalState.groups[i].name) == true)
+    botones = botones + " " + `<button class="btn btn-primary" type="button" data-toggle="modal" id="#rmGr${Pmgr.globalState.groups[i].name}">${Pmgr.globalState.groups[i].name}</button>`;
+  }
+  return botones;
+}
+
+function listaGruposAdd(printer) {
+  let botones = "";
+  for (var i = 0; i < Pmgr.globalState.groups.length; i++) {
+    if(printerIsOnGroup(printer,Pmgr.globalState.groups[i].name) == false)
+    botones = botones + " " + `<button class="btn btn-primary" type="button" data-toggle="modal" id="#addGr${Pmgr.globalState.groups[i].name}">${Pmgr.globalState.groups[i].name}</button>`;
+  }
+  return botones;
 }
 
 function createJobItem(job) {
@@ -678,17 +718,13 @@ function updateImDer(printerId) {
 
     <div class="row-4">
         <h3>Incluidas en grupos</h3>
-        <script>
-            
-        </script>
+        ${listaGruposIncluidos(printer.name)}
 
     </div>
     <div class="row-4">
         <br>
         <h3>Grupos a los que añadir</h3>
-        <script>
-            
-        </script>
+        ${listaGruposAdd(printer.name)}
     </div>
 </div>
 `);
@@ -966,7 +1002,7 @@ function update(result) {
     updateGrDer(interfaceState.grSelectedGroupId);
     // Rellenar lista de botones de filtro en ImIz
     updateImIzFiltros();
-    
+
 
   } catch (e) {
     console.log('Error actualizando', e);
@@ -995,6 +1031,7 @@ $(function () {
   });
 
   $("#botonAddImpresora").click(e => addPrinter($(e.target)));
+  $("#botonAddGroup").click(e => addGroup($(e.target)));
 });
 
 // cosas que exponemos para usarlas desde la consola
@@ -1007,4 +1044,4 @@ window.updateImDer = updateImDer
 window.updateGrDer = updateGrDer
 window.statusToSVG = statusToSVG
 window.removeImFilter = removeImFilter
-
+window.printerIsOnGroup = printerIsOnGroup
