@@ -318,6 +318,10 @@ function printerIsOnGroup(printerName, groupName) {
   return false;
 }
 
+/**
+ * Quiero pasarle el boton de html para acceder al padre que tiene el id de la impresora
+ * No consigo que funcione el boton
+ */
 function addPrintertoGroup(printer){
   let divParent = printer.parentNode;
   console.log(divParent.id);
