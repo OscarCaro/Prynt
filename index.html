@@ -26,11 +26,11 @@
         <!-- pestañas generales -->
         <ul class="nav nav-pills mb-3 justify-content-center" id="pills-tab" role="tablist">
             <li class="nav-item" role="presentation">
-                <a class="nav-link" id="pills-jobs-tab" data-toggle="pill" href="#pills-jobs" role="tab"
+                <a class="nav-link active" id="pills-jobs-tab" data-toggle="pill" href="#pills-jobs" role="tab"
                     aria-controls="pills-jobs" aria-selected="false"><b>Cola de impresión</b></a>
             </li>
             <li class="nav-item" role="presentation">
-                <a class="nav-link active" id="pills-printers-tab" data-toggle="pill" href="#pills-printers" role="tab"
+                <a class="nav-link " id="pills-printers-tab" data-toggle="pill" href="#pills-printers" role="tab"
                     aria-controls="pills-printers" aria-selected="true"><b>Impresoras</b></a>
             </li>
             <li class="nav-item" role="presentation">
@@ -41,7 +41,7 @@
 
         <div class="tab-content" id="pills-tabContent">
             <!-- cola de impresión -->
-            <div class="tab-pane fade" id="pills-jobs" role="tabpanel" aria-labelledby="pills-jobs-tab">
+            <div class="tab-pane fade show active" id="pills-jobs" role="tabpanel" aria-labelledby="pills-jobs-tab">
                 <div class="row">
                     <!-- columna izquierda -->
                     <div class="col">
@@ -57,12 +57,13 @@
                                 <div class="row w-100">
                                     <div class="col">
                                         <input class="form-control mr-sm-2" type="search" placeholder="Impresoras"
-                                        id="ciSearchInput" aria-label="Search">
+                                            id="ciSearchInput" aria-label="Search">
                                     </div>
 
 
                                     <div class="col-2">
-                                        <button class="btn btn-primary" onclick="addCiSearchInput()" type="submit">Buscar</button>
+                                        <button class="btn btn-primary" onclick="addCiSearchInput()"
+                                            type="submit">Buscar</button>
                                     </div>
 
 
@@ -84,51 +85,7 @@
                             <!-- Dialogo Modal Nueva impresion -->
                             <div class="modal fade" id="dialogoNuevaImpresion" tabindex="-1" role="dialog"
                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLabel">
-                                                Nueva impresión</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <form class="form">
-                                                <h6> <b>Archivo:</b></h6>
-                                                <input type="file" id="inputNewFileName" />
-                                            </form>
 
-                                            <form class="form-inline">
-                                                <h6> <b>Propietario:</b></h6>
-                                                <div class="form-group mx-sm-3 mb-2">
-                                                    <label for="inputNewFileOwner"
-                                                        class="sr-only">NuevoPropietario</label>
-                                                    <input type="text" class="form-control-plaintext"
-                                                        id="inputNewFileOwner" placeholder="Propietario">
-                                                </div>
-                                            </form>
-
-                                            <form class="form-inline">
-                                                <h6> <b>Impresora/Grupo:</b></h6>
-                                                <div class="form-group mx-sm-3 mb-2">
-                                                    <label for="inputNewFilePrinter"
-                                                        class="sr-only">NuevaImpresora</label>
-                                                    <input type="text" class="form-control-plaintext"
-                                                        id="inputNewFilePrinter" placeholder="Impresora o Grupo">
-                                                </div>
-                                            </form>
-
-
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">Cancelar</button>
-                                            <button type="button" class="btn btn-primary" id="botonAddJob">Añadir
-                                                impresión</button>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
 
                         </div>
@@ -149,8 +106,7 @@
             </div>
 
             <!-- impresoras -->
-            <div class="tab-pane fade show active" id="pills-printers" role="tabpanel"
-                aria-labelledby="pills-printers-tab">
+            <div class="tab-pane fade" id="pills-printers" role="tabpanel" aria-labelledby="pills-printers-tab">
                 <div class="row">
                     <!-- columna izquierda -->
                     <div class="col">
@@ -289,8 +245,8 @@
 
                                 <div class="row w-100">
                                     <div class="col">
-                                        <input class="form-control mr-sm-2" type="search" placeholder="Grupo" aria-label="Search"
-                                            id="grSearchInput">
+                                        <input class="form-control mr-sm-2" type="search" placeholder="Grupo"
+                                            aria-label="Search" id="grSearchInput">
                                     </div>
 
 
