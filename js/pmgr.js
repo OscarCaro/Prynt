@@ -145,8 +145,9 @@ function updateImIzFiltros() {
 
 
 function statusToSVG(state, desiredSize) {
+  const PS = Pmgr.PrinterStates;  
   switch (state) {
-    case 'PRINTING':
+    case PS.PRINTING || 'PRINTING':
       // Source: https://icons.getbootstrap.com/
       return `
       <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-printer-fill"
@@ -160,7 +161,7 @@ function statusToSVG(state, desiredSize) {
       `;
       break;
 
-    case 'PAUSED':
+    case PS.PAUSED || 'PAUSED':
       // Source: https://icons.getbootstrap.com/
       return `
       <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-pause-fill" 
@@ -170,7 +171,7 @@ function statusToSVG(state, desiredSize) {
           `;
       break;
 
-    case 'NO_INK':
+    case PS.NO_INK || 'NO_INK':
       // Source: https://icons.getbootstrap.com/
       return `
       <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-droplet-half" 
@@ -181,7 +182,7 @@ function statusToSVG(state, desiredSize) {
           `;
       break;
 
-    case 'NO_PAPER':
+    case PS.NO_PAPER || 'NO_PAPER':
       // Source: https://icons.getbootstrap.com/
       return `
       <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-file-earmark-excel-fill" 
