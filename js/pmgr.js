@@ -26,9 +26,10 @@ import * as Pmgr from './pmgrapi.js'
 
 
 class InterfaceState {
-  constructor(ciSelectedJobId, imSelectedPrinterId, imFilters, grSelectedGroupId, grFilters) {
+  constructor(ciSelectedJobId, ciSearchInput, imSelectedPrinterId, imFilters, grSelectedGroupId, grSearchInput, grFilters) {
     // State of Cola de Impresion tab
     this.ciSelectedJobId = ciSelectedJobId;
+    this.ciSearchInput = ciSearchInput;
 
     // State of Impresoras tab
     this.imSelectedPrinterId = imSelectedPrinterId;
@@ -36,7 +37,9 @@ class InterfaceState {
 
     // State of Grupos tab
     this.grSelectedGroupId = grSelectedGroupId;
+    this.grSearchInput = grSearchInput;
     this.grFilters = grFilters;
+
   }
 }
 
@@ -127,6 +130,50 @@ function applyImFilters() {
   }
 }
 
+function addGrSearchInput() {
+  let input = document.getElementById("grSearchInput").value;
+  interfaceState.grSearchInput = input;
+  update();
+}
+
+function applyGrSearch() {
+  if (interfaceState != undefined && interfaceState.grSearchInput != "") {
+    let filteredList = Pmgr.globalState.groups;
+    filteredList = filteredList.filter((g) => g.name.includes(interfaceState.grSearchInput));
+
+    // To update the right panel:
+    if (filteredList.length > 0) { interfaceState.grSelectedGroupId = filteredList[0].id; }
+    else { interfaceState.grSelectedGroupId = -1; }
+
+    return filteredList;
+  }
+  else {
+    return Pmgr.globalState.groups;
+  }
+}
+
+function addCiSearchInput() {
+  let input = document.getElementById("ciSearchInput").value;
+  interfaceState.ciSearchInput = input;
+  update();
+}
+
+function applyCiSearch() {
+  if (interfaceState != undefined && interfaceState.ciSearchInput != "") {
+    let filteredList = Pmgr.globalState.jobs;
+    filteredList = filteredList.filter((j) => j.fileName.includes(interfaceState.ciSearchInput));
+
+    // To update the right panel:
+    if (filteredList.length > 0) { interfaceState.ciSelectedJobId = filteredList[0].id; }
+    else { interfaceState.ciSelectedJobId = -1; }
+
+    return filteredList;
+  }
+  else {
+    return Pmgr.globalState.jobs;
+  }
+}
+
 
 function updateImIzFiltros() {
   $("#imIzFilterList").empty();
@@ -145,9 +192,9 @@ function updateImIzFiltros() {
 
 
 function statusToSVG(state, desiredSize) {
-  const PS = Pmgr.PrinterStates;  
+  const PS = Pmgr.PrinterStates;
   switch (state) {
-    case PS.PRINTING || 'PRINTING':
+    case 'PRINTING':
       // Source: https://icons.getbootstrap.com/
       return `
       <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-printer-fill"
@@ -161,7 +208,7 @@ function statusToSVG(state, desiredSize) {
       `;
       break;
 
-    case PS.PAUSED || 'PAUSED':
+    case 'PAUSED':
       // Source: https://icons.getbootstrap.com/
       return `
       <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-pause-fill" 
@@ -171,7 +218,7 @@ function statusToSVG(state, desiredSize) {
           `;
       break;
 
-    case PS.NO_INK || 'NO_INK':
+    case 'NO_INK':
       // Source: https://icons.getbootstrap.com/
       return `
       <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-droplet-half" 
@@ -182,7 +229,7 @@ function statusToSVG(state, desiredSize) {
           `;
       break;
 
-    case PS.NO_PAPER || 'NO_PAPER':
+    case 'NO_PAPER':
       // Source: https://icons.getbootstrap.com/
       return `
       <svg width="${desiredSize}em" height="${desiredSize}em" viewBox="0 0 16 16" class="bi bi-file-earmark-excel-fill" 
@@ -209,6 +256,10 @@ function getGroupPrinters(group) {
 // Return the list of groups that the given printer is in
 function getPrinterGroups(printer) {
   return Pmgr.globalState.groups.filter((g) => g.printers.indexOf(printer.id) > -1);
+}
+
+function getPrinterGroupsNot(printer) {
+  return Pmgr.globalState.groups.filter((g) => g.printers.indexOf(printer.id) <= -1);
 }
 
 // Return the list of jobs that the given printer has in the queue
@@ -292,7 +343,6 @@ function addPrinter() {
   let localizacion = $("#inputNuevaLocalizacion").val();
   let modelo = $("#inputNuevoModelo").val();
   let o = { alias: nombre, ip, location: localizacion, model: modelo, status: 'paused' };
-  console.log("uwu" + ip);
   // faltaría validar -- por ejemplo, la IP
   let valid = true;
   if (valid) {
@@ -305,12 +355,25 @@ function addGroup() {
   Pmgr.addGroup({ name: nombre }).then(update);
 }
 
+function addJob() {
+  let nombre = $("#inputNewFileName").val();
+  if (nombre.type === 'application/pdf') {
+    console.log('It is validated!');
+  }
+  nombre = nombre.split(/(\\|\/)/g).pop();
+  let propietario = $("#inputNewFileOwner").val();
+  let impresora = $("#inputNewFilePrinter").val();
+  console.log("-------------ADD JOB-------------------");
+  console.log(nombre + " - " + propietario + " - " + impresora);
+  Pmgr.addJob({ fileName: nombre, owner: propietario, printer: impresora }).then(update);
+}
+
 function printerIsOnGroup(printerName, groupName) {
   for (var i = 0; i < Pmgr.globalState.groups.length; i++) {
     if (Pmgr.globalState.groups[i].name == groupName) {
       for (var j = 0; j < Pmgr.globalState.groups[i].printers.length; j++) {
         if (Pmgr.globalState.groups[i].printers[j].name == printerName) {
-            return true;
+          return true;
         }
       }
     }
@@ -318,22 +381,32 @@ function printerIsOnGroup(printerName, groupName) {
   return false;
 }
 
-/**
- * Quiero pasarle el boton de html para acceder al padre que tiene el id de la impresora
- * No consigo que funcione el boton
- */
-function addPrintertoGroup(printer){
-  let divParent = printer.parentNode;
-  console.log(divParent.id);
+function addPtoGr(pr){
+
+}
+
+
+function addPrintertoGroup(printerId) {
+  console.log("Boton pulsado. Id: " + printerId);
+
+  Pmgr.globalState.groups.find((g) => g.id == interfaceState.grSelectedGroupId).printers.push(printerId);
+
+  //let currentGroup = 
+
+  //currentGroup.printers.push(printerId);
+
+  updateGrDer(interfaceState.grSelectedGroupId);
+
+  console.log("Printer: " + printerId + " añadida al grupo: " + currentGroup.alias);
 
 }
 
 function listaGruposIncluidos(printer) {
-  
+
   let botones = "";
   for (var i = 0; i < Pmgr.globalState.groups.length; i++) {
-    if(printerIsOnGroup(printer,Pmgr.globalState.groups[i].name) == true)
-    botones = botones + " " + `<button class="btn btn-primary" type="button" data-toggle="modal" id="#rmGr${Pmgr.globalState.groups[i].name}">${Pmgr.globalState.groups[i].name}</button>`;
+    if (printerIsOnGroup(printer, Pmgr.globalState.groups[i].name) == true)
+      botones = botones + " " + `<button class="btn btn-primary" type="button" data-toggle="modal" id="#rmGr${Pmgr.globalState.groups[i].name}">${Pmgr.globalState.groups[i].name}</button>`;
   }
   return botones;
 }
@@ -341,8 +414,8 @@ function listaGruposIncluidos(printer) {
 function listaGruposAdd(printer) {
   let botones = "";
   for (var i = 0; i < Pmgr.globalState.groups.length; i++) {
-    if(printerIsOnGroup(printer,Pmgr.globalState.groups[i].name) == false)
-    botones = botones + " " + `<button class="btn btn-primary" type="button" data-toggle="modal" id="#addGr${Pmgr.globalState.groups[i].name}">${Pmgr.globalState.groups[i].name}</button>`;
+    if (printerIsOnGroup(printer, Pmgr.globalState.groups[i].name) == false)
+      botones = botones + " " + `<button class="btn btn-primary" type="button" data-toggle="modal" id="#addGr${Pmgr.globalState.groups[i].name}">${Pmgr.globalState.groups[i].name}</button>`;
   }
   return botones;
 }
@@ -650,10 +723,12 @@ function updateImDer(printerId) {
             <div class="col">
                 <p>
                     <!-- boton eliminar impresora -->
-                    <br><button class="btn btn-primary" type="button"
-                        data-toggle="modal"
-                        data-target="#dialogoEliminarImpresora">Eliminar
-                        impresora</button>
+                    <br><button type="button" data-toggle="modal"
+                        data-target="#dialogoEliminarImpresora">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash-fill" viewBox="0 0 16 16">
+  <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+</svg>
+                      </button>
 
                 <div class="modal fade" id="dialogoEliminarImpresora" tabindex="-1"
                     role="dialog" aria-labelledby="exampleModalLabel"
@@ -724,17 +799,83 @@ function updateImDer(printerId) {
     <p></p>
 
     <div class="row-4">
-        <h3>Incluidas en grupos</h3>
-        ${listaGruposIncluidos(printer.name)}
+        <h3><b>Incluidas en grupos</h3>
+        <div class="card">
+          <div class="row scroll-panel-derecho" id="imDerGrIncl">
+          
+          </div>
+        </div>
 
     </div>
     <div class="row-4">
         <br>
-        <h3>Grupos a los que añadir</h3>
-        ${listaGruposAdd(printer.name)}
+        <h3><b>Grupos a los que añadir</h3>
+        <div class="card">
+          <div class="row scroll-panel-derecho" id="imDerGrAnyadir">
+          
+          </div>
     </div>
 </div>
 `);
+
+  console.log(getPrinterGroupsNot(printer));
+  let listaGr = getPrinterGroups(printer);
+  let listaGrNot = getPrinterGroupsNot(printer);
+
+  for (let i = 0; i < listaGr.length; i++) {
+    $("#imDerGrIncl").append(`
+          
+          <div class="col-3">
+            <div class="card">
+              <div class="row">
+                <div class="col-8">
+                  <h4>${listaGr[i].name} </h4>
+                </div>
+                
+                <div class="col" id="${listaGr[i].id}"> 
+                  <button class="btn btn-primary" id="botonAddImpresoratoGroup${i}" type="button">+</button> 
+                </div>
+              </div>
+      
+              <div class="row">
+                <div class="col">
+      
+                  
+                </div >
+              </div >
+            </div >
+          </div >
+
+    `);
+  }
+
+
+  for (let i = 0; i < listaGrNot.length; i++) {
+    $("#imDerGrAnyadir").append(`
+          
+          <div class="col-3">
+            <div class="card">
+              <div class="row">
+                <div class="col-8">
+                  <h4>${listaGrNot[i].name} </h4>
+                </div>
+                
+                <div class="col" id="${listaGrNot[i].id}"> 
+                  <button class="btn btn-primary" id="botonAddImpresoratoGroup${i}" type="button">+</button> 
+                </div>
+              </div>
+      
+              <div class="row">
+                <div class="col">
+      
+                  
+                </div >
+              </div >
+            </div >
+          </div >
+
+    `);
+  }
 
 }
 
@@ -745,7 +886,7 @@ function updateGrDer(groupId) {
 
   if (group == undefined) {       // Error message when there's no group to be displayed
     $("#grDerDatos").html(
-      ` <b>Ningun grupo seleccionado</b>  `);
+      ` < b > Ningun grupo seleccionado</b > `);
 
     interfaceState.grSelectedGroupId = -1;
     return;
@@ -755,173 +896,171 @@ function updateGrDer(groupId) {
 
   $("#grDerDatos").html(
     `
-    <div class="col">
-    <div class="row-4">
+    
+      <div class="row-4">
         <div class="row">
-            <div class="col-9">
-                <h2>
-                    <!-- nombre grupo -->
+          <div class="col-9">
+            <h2>
+              <!-- nombre grupo -->
                     ${group.name}
 
-                    <!-- icono editar -->
+              <!-- icono editar -->
                     <button type="button" data-toggle="modal"
-                        data-target="#dialogoEditarGrupo">
-                        <svg width="1em" height="1em" viewBox="0 0 16 16"
-                            class="bi bi-pencil-square" fill="currentColor"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path
-                                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                            <path fill-rule="evenodd"
-                                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                        </svg>
-                    </button>
-                </h2>
+                data-target="#dialogoEditarGrupo">
+                <svg width="1em" height="1em" viewBox="0 0 16 16"
+                  class="bi bi-pencil-square" fill="currentColor"
+                  xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                  <path fill-rule="evenodd"
+                    d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                </svg>
+              </button>
+            </h2>
 
-                <!-- Dialogo Modal Editar Grupo -->
+            <!-- Dialogo Modal Editar Grupo -->
                 <div class="modal fade" id="dialogoEditarGrupo" tabindex="-1"
-                    role="dialog" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">
-                                    Editar grupo ${group.name}</h5>
-                                <button type="button" class="close" data-dismiss="modal"
-                                    aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="form-inline">
-                                    <h6> <b>Nombre:</b></h6>
-                                    <div class="form-group mx-sm-3 mb-2">
-                                        <label for="inputEditGroupName"
-                                            class="sr-only">NuevoNombre</label>
-                                        <input type="text"
-                                            class="form-control-plaintext"
-                                            id="inputEditGroupName" value="${group.name}">
+              role="dialog" aria-labelledby="exampleModalLabel"
+              aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                      Editar grupo ${group.name}</h5>
+                    <button type="button" class="close" data-dismiss="modal"
+                      aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    <form class="form-inline">
+                      <h6> <b>Nombre:</b></h6>
+                      <div class="form-group mx-sm-3 mb-2">
+                        <label for="inputEditGroupName"
+                          class="sr-only">NuevoNombre</label>
+                        <input type="text"
+                          class="form-control-plaintext"
+                          id="inputEditGroupName" value="${group.name}">
                                     </div>
                                 </form>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-dismiss="modal">Cancelar</button>
-                                <button type="button" class="btn btn-primary">Editar
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary"
+                        data-dismiss="modal">Cancelar</button>
+                      <button type="button" class="btn btn-primary">Editar
                                     grupo</button>
-                            </div>
-                        </div>
                     </div>
+                  </div>
                 </div>
+              </div>
 
             </div>
             <div class="col">
-                <p>
-                    <!-- boton eliminar grupo -->
+              <p>
+                <!-- boton eliminar grupo -->
                     <br><button class="btn btn-primary" type="button"
-                        data-toggle="modal"
-                        data-target="#dialogoEliminarGrupo">Eliminar
+                  data-toggle="modal"
+                  data-target="#dialogoEliminarGrupo">Eliminar
                         grupo</button>
 
-                <div class="modal fade" id="dialogoEliminarGrupo" tabindex="-1"
+                  <div class="modal fade" id="dialogoEliminarGrupo" tabindex="-1"
                     role="dialog" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">
-                                    Eliminar grupo ${group.name}</h5>
-                                <button type="button" class="close" data-dismiss="modal"
-                                    aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <form class="form-inline">
-                                    <h6> ¿Estás seguro/a de que deseas eliminar el
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">
+                            Eliminar grupo ${group.name}</h5>
+                          <button type="button" class="close" data-dismiss="modal"
+                            aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                          </button>
+                        </div>
+                        <div class="modal-body">
+                          <form class="form-inline">
+                            <h6> ¿Estás seguro/a de que deseas eliminar el
                                         grupo ${group.name}? Esta acción no se puede deshacer</h6>
 
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary"
-                                    data-dismiss="modal">Cancelar</button>
-                                <button type="button"
-                                    class="btn btn-danger">Eliminar</button>
-                            </div>
+                          </form>
                         </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary"
+                            data-dismiss="modal">Cancelar</button>
+                          <button type="button"
+                            class="btn btn-danger">Eliminar</button>
+                        </div>
+                      </div>
                     </div>
-                </div>
+                  </div>
                 </p>
                 <p></p>
             </div>
-        </div>
-    </div>
+            </div>
+          </div>
 
-    <br>
-    <br>
-    <br>
+          <br>
+            <br>
+              <br>
 
-    <!-- barra de filtrado -->
+                <!-- barra de filtrado -->
     <div class="row">
-        <div class="col-8">
-            <input class="form-control mr-sm-2" type="search" placeholder="Filtrar"
-                aria-label="Search">
+                  <div class="col-8">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Filtrar"
+                      aria-label="Search">
         </div>
-        <div class="col">
-            <select class="browser-default custom-select">
-                <option selected="1">Nombre</option>
-                <option value="2">Localizacion</option>
-                <option value="3">ID</option>
-            </select>
-        </div>
-        <div class="col-2">
-            <button class="btn btn-primary" type="submit">Filtrar</button>
-        </div>
-    </div>
-    <p></p>
+                    <div class="col">
+                      <select class="browser-default custom-select">
+                        <option selected="1">Nombre</option>
+                        <option value="2">Localizacion</option>
+                        <option value="3">ID</option>
+                      </select>
+                    </div>
+                    <div class="col-2">
+                      <button class="btn btn-primary" type="submit">Filtrar</button>
+                    </div>
+                  </div>
+                  <p></p>
 
-    <!-- opciones añadidas de filtrado -->
+                  <!-- opciones añadidas de filtrado -->
     <button type="button" class="btn btn-secondary btn-sm filter-btn-space">Localización: Pepe
         ×</button>
-    <button type="button" class="btn btn-secondary btn-sm filter-btn-space">Grupo: Salón ×</button>
-    <p></p>
+                  <button type="button" class="btn btn-secondary btn-sm filter-btn-space">Grupo: Salón ×</button>
+                  <p></p>
 
-    <div class="row-4">
-        <h3><b>Impresoras incluidas</h3>
-        <div class="card">
-          <div class="row scroll-panel-derecho" id="grDerImprIcluidas">
-          
-          </div>
-        </div>
+                  <div class="row-4">
+                    <h3><b>Impresoras incluidas</h3>
+                      <div class="card">
+                        <div class="row scroll-panel-derecho" id="grDerImprIcluidas">
+
+                        </div>
+                      </div>
     </div>
 
-    <br>
-    <div class="row-4">
-        <h3><b>Impresoras a añadir</h3>
-        <div class="card">
-          <div class="row scroll-panel-derecho" id="grDerImprAnyadir">
-          
-          </div>
-        </div>
+                    <br>
+                      <div class="row-4">
+                        <h3><b>Impresoras a añadir</h3>
+                          <div class="card">
+                            <div class="row scroll-panel-derecho" id="grDerImprAnyadir">
+
+                            </div>
+                          </div>
     </div>
-</div>
+                      </div>
 `);
 
-
-console.log("Pinters del grupo: " + group.printers);
-if(group.printers.length > 0)
-  for(let i = 0; i < group.pinters.length; i++){
-  $("#grDerImprIcluidas").append(`
+  console.log("Printers del grupo: " + group.printers);
+    for (let i = 0; i < group.printers.length; i++) {
+      $("#grDerImprIcluidas").append(`
      
     <div class="col-3">
       <div class="card">
         <div class="row">
           <div class="col-8">
-            <h4>${group.pinters[i]} </h4>
+            <h4>${group.printers[i].alias} </h4>
           </div>
           
           <div class="col"> 
-            <button class="btn btn-danger" type="button"
+            <button class="btn btn-danger" type="button" onclick="delPrinterFromGroup(${group.printers[i].id}, ${group.id})"
               data-toggle="modal" data-target="#dialogoEliminarImpresoraDeGrupo">×</button> 
           </div>
         </div>
@@ -934,45 +1073,35 @@ if(group.printers.length > 0)
         </div>
       </div>
     </div>
-  
   `);
-  }
+    }
 
-
-  for(let i = 0; i < Pmgr.globalState.printers.length; i++){
-    let find = false;
-    if(group.printers.length > 0)
-      for(let j = 0; j < group.pinters.length && !find; j++){
-        if(Pmgr.globalState.printers[i] == group.pinters[j]){
-          find = true;
-        }
-      }
-    
-    if(!find){
+  for (let i = 0; i < Pmgr.globalState.printers.length; i++) {
+    if (!printerIsOnGroup(Pmgr.globalState.printers[i].alias, group.name)) {
       $("#grDerImprAnyadir").append(`
-        
-        <div class="col-3">
-          <div class="card">
-            <div class="row">
-              <div class="col-8">
-                <h4>${Pmgr.globalState.printers[i].alias} </h4>
+          
+          <div class="col-3">
+            <div class="card">
+              <div class="row">
+                <div class="col-8">
+                  <h4>${Pmgr.globalState.printers[i].alias} </h4>
+                </div>
+                
+                <div class="col"> 
+                  <button class="btn btn-primary" onclick="addPrintertoGroup(${Pmgr.globalState.printers[i].id})" type="button">+</button> 
+                </div>
               </div>
-              
-              <div class="col" id="${Pmgr.globalState.printers[i].id}"> 
-                <button class="btn btn-primary" id="botonAddImpresoratoGroup${i}" type="button">+</button> 
-              </div>
-            </div>
-    
-            <div class="row">
-              <div class="col">
-              ${Pmgr.globalState.printers[i].location}
-                <br> ${Pmgr.globalState.printers[i].id}
+      
+              <div class="row">
+                <div class="col">
+                Localización: ${Pmgr.globalState.printers[i].location}
+                  <br> ID: ${Pmgr.globalState.printers[i].id}
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      
-      `);
+        
+        `);
     }
   }
 }
@@ -1053,17 +1182,19 @@ function update(result) {
     $("#grIzLista").empty();
 
     // aplicamos filtros activos
+    let filteredJobs = applyCiSearch();
     let filteredPrinterList = applyImFilters();
+    let filteredGroupList = applyGrSearch();
 
     // y lo volvemos a rellenar con su nuevo contenido
-    Pmgr.globalState.jobs.forEach(j => $("#ciIzLista").append(createJobItem(j)));
+    filteredJobs.forEach(j => $("#ciIzLista").append(createJobItem(j)));
     filteredPrinterList.forEach(m => $("#imIzLista").append(createPrinterItem(m)));
-    Pmgr.globalState.groups.forEach(g => $("#grIzLista").append(createGroupItem(g)));
+    filteredGroupList.forEach(g => $("#grIzLista").append(createGroupItem(g)));
 
     // Inicializar interfaceState
     if (interfaceState == undefined) {
       // -1 means nothing selected, [] means no active filters
-      interfaceState = new InterfaceState(-1, -1, [], -1, []);
+      interfaceState = new InterfaceState(-1, "", -1, [], -1, "", []);
 
       if (Pmgr.globalState.jobs.length > 0) {
         interfaceState.ciSelectedJobId = Pmgr.globalState.jobs[0].id;
@@ -1110,9 +1241,11 @@ $(function () {
     }
   });
 
+  $("#botonAddJob").click(e => addJob($(e.target)));
   $("#botonAddImpresora").click(e => addPrinter($(e.target)));
-  $("#botonAddImpresoratoGroup0").click(e => addPrintertoGroup(e));
+  //$("#botonAddImpresoratoGroup0").click(e => addPrintertoGroup($(e.target)));
   $("#botonAddGroup").click(e => addGroup($(e.target)));
+
 });
 
 // cosas que exponemos para usarlas desde la consola
@@ -1126,3 +1259,6 @@ window.updateGrDer = updateGrDer
 window.statusToSVG = statusToSVG
 window.removeImFilter = removeImFilter
 window.printerIsOnGroup = printerIsOnGroup
+window.addPrintertoGroup = addPrintertoGroup
+window.addGrSearchInput = addGrSearchInput
+window.addCiSearchInput = addCiSearchInput

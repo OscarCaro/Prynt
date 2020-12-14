@@ -54,11 +54,19 @@
                             <!-- barra de busqueda -->
                             <nav class="navbar">
 
-                                <form class="form-inline">
-                                    <input class="form-control mr-sm-2" type="search" placeholder="Impresoras"
-                                        aria-label="Search">
-                                    <button class="btn btn-primary" type="submit">Buscar</button>
-                                </form>
+                                <div class="row w-100">
+                                    <div class="col">
+                                        <input class="form-control mr-sm-2" type="search" placeholder="Impresoras"
+                                        id="ciSearchInput" aria-label="Search">
+                                    </div>
+
+
+                                    <div class="col-2">
+                                        <button class="btn btn-primary" onclick="addCiSearchInput()" type="submit">Buscar</button>
+                                    </div>
+
+
+                                </div>
                             </nav>
                             <!-- lista de documentos -->
                             <div class="container">
@@ -88,24 +96,26 @@
                                         <div class="modal-body">
                                             <form class="form">
                                                 <h6> <b>Archivo:</b></h6>
-                                                <input type="file" />
+                                                <input type="file" id="inputNewFileName" />
                                             </form>
 
                                             <form class="form-inline">
                                                 <h6> <b>Propietario:</b></h6>
                                                 <div class="form-group mx-sm-3 mb-2">
-                                                    <label for="inputNewIP" class="sr-only">NuevaIP</label>
-                                                    <input type="text" class="form-control-plaintext" id="inputNewIP"
-                                                        placeholder="El pepe">
+                                                    <label for="inputNewFileOwner"
+                                                        class="sr-only">NuevoPropietario</label>
+                                                    <input type="text" class="form-control-plaintext"
+                                                        id="inputNewFileOwner" placeholder="Propietario">
                                                 </div>
                                             </form>
 
                                             <form class="form-inline">
                                                 <h6> <b>Impresora/Grupo:</b></h6>
                                                 <div class="form-group mx-sm-3 mb-2">
-                                                    <label for="inputNewModel" class="sr-only">NuevoModelo</label>
-                                                    <input type="text" class="form-control-plaintext" id="inputNewModel"
-                                                        placeholder="">
+                                                    <label for="inputNewFilePrinter"
+                                                        class="sr-only">NuevaImpresora</label>
+                                                    <input type="text" class="form-control-plaintext"
+                                                        id="inputNewFilePrinter" placeholder="Impresora o Grupo">
                                                 </div>
                                             </form>
 
@@ -114,8 +124,8 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-dismiss="modal">Cancelar</button>
-                                            <button type="button" class="btn btn-primary">Editar
-                                                impresora</button>
+                                            <button type="button" class="btn btn-primary" id="botonAddJob">Añadir
+                                                impresión</button>
                                         </div>
                                     </div>
                                 </div>
@@ -139,7 +149,8 @@
             </div>
 
             <!-- impresoras -->
-            <div class="tab-pane fade show active" id="pills-printers" role="tabpanel" aria-labelledby="pills-printers-tab">
+            <div class="tab-pane fade show active" id="pills-printers" role="tabpanel"
+                aria-labelledby="pills-printers-tab">
                 <div class="row">
                     <!-- columna izquierda -->
                     <div class="col">
@@ -258,7 +269,7 @@
                         </div>
                     </div>
                 </div>
-            
+
             </div>
 
             <!-- grupos de impresoras -->
@@ -275,16 +286,21 @@
                             <!-- barra de busqueda -->
                             <nav class="navbar">
 
-                                <form class="form-inline">
 
-                                    <input class="form-control mr-sm-2" type="search" placeholder="Grupo"
-                                        aria-label="Search">
+                                <div class="row w-100">
+                                    <div class="col">
+                                        <input class="form-control mr-sm-2" type="search" placeholder="Grupo" aria-label="Search"
+                                            id="grSearchInput">
+                                    </div>
 
 
-                                    <button class="btn btn-primary" type="submit">Buscar</button>
+                                    <div class="col-2">
+                                        <button class="btn btn-primary" onclick="addGrSearchInput()">Buscar</button>
+                                    </div>
 
 
-                                </form>
+                                </div>
+
                             </nav>
 
                             <!-- lista de grupos -->
@@ -325,7 +341,8 @@
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
                                                 data-dismiss="modal">Cancelar</button>
-                                            <button type="button" class="btn btn-primary" id="botonAddGroup">Crear grupo</button>
+                                            <button type="button" class="btn btn-primary" id="botonAddGroup">Crear
+                                                grupo</button>
                                         </div>
                                     </div>
                                 </div>
