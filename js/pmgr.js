@@ -319,7 +319,9 @@ function printerIsOnGroup(printerName, groupName) {
 }
 
 function addPrintertoGroup(printer){
-    
+  let divParent = printer.parentNode;
+  console.log(divParent.id);
+
 }
 
 function listaGruposIncluidos(printer) {
@@ -881,21 +883,94 @@ function updateGrDer(groupId) {
     <p></p>
 
     <div class="row-4">
-        <h3>Incluidas en grupos</h3>
-        <script>
-            
-        </script>
+        <h3><b>Impresoras incluidas</h3>
+        <div class="card">
+          <div class="row scroll-panel-derecho" id="grDerImprIcluidas">
+          
+          </div>
+        </div>
     </div>
+
+    <br>
     <div class="row-4">
-        <br>
-        <h3>Grupos a los que añadir</h3>
-        <script>
-            
-        </script>
+        <h3><b>Impresoras a añadir</h3>
+        <div class="card">
+          <div class="row scroll-panel-derecho" id="grDerImprAnyadir">
+          
+          </div>
+        </div>
     </div>
 </div>
 `);
 
+
+console.log("Pinters del grupo: " + group.printers);
+if(group.printers.length > 0)
+  for(let i = 0; i < group.pinters.length; i++){
+  $("#grDerImprIcluidas").append(`
+     
+    <div class="col-3">
+      <div class="card">
+        <div class="row">
+          <div class="col-8">
+            <h4>${group.pinters[i]} </h4>
+          </div>
+          
+          <div class="col"> 
+            <button class="btn btn-danger" type="button"
+              data-toggle="modal" data-target="#dialogoEliminarImpresoraDeGrupo">×</button> 
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col">
+            Localización: Pepe
+            <br> ID: 2344
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  `);
+  }
+
+
+  for(let i = 0; i < Pmgr.globalState.printers.length; i++){
+    let find = false;
+    if(group.printers.length > 0)
+      for(let j = 0; j < group.pinters.length && !find; j++){
+        if(Pmgr.globalState.printers[i] == group.pinters[j]){
+          find = true;
+        }
+      }
+    
+    if(!find){
+      $("#grDerImprAnyadir").append(`
+        
+        <div class="col-3">
+          <div class="card">
+            <div class="row">
+              <div class="col-8">
+                <h4>${Pmgr.globalState.printers[i].alias} </h4>
+              </div>
+              
+              <div class="col" id="${Pmgr.globalState.printers[i].id}"> 
+                <button class="btn btn-primary" id="botonAddImpresoratoGroup${i}" type="button">+</button> 
+              </div>
+            </div>
+    
+            <div class="row">
+              <div class="col">
+              ${Pmgr.globalState.printers[i].location}
+                <br> ${Pmgr.globalState.printers[i].id}
+              </div>
+            </div>
+          </div>
+        </div>
+      
+      `);
+    }
+  }
 }
 
 // funcion para generar datos de ejemplo: impresoras, grupos, trabajos, ...
@@ -1032,6 +1107,7 @@ $(function () {
   });
 
   $("#botonAddImpresora").click(e => addPrinter($(e.target)));
+  $("#botonAddImpresoratoGroup0").click(e => addPrintertoGroup(e));
   $("#botonAddGroup").click(e => addGroup($(e.target)));
 });
 
