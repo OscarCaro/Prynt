@@ -37,9 +37,9 @@
             <br>
             <br>
             <h2><b>Cambios respecto a la anterior entrega</b></h2>
-            <br>Respecto a la anterior entrega, hemos añadido interacciones a nuestra aplicación.
-            En las tres pestañas se pueden interacionar con los elementos
-            <br>del panel izquierdo para visualizar la información en el panel derecho.<br>
+            <br>Respecto a la anterior entrega, hemos añadido la conexión con el servidor y validación.
+            En las tres pestañas los elementos del panel izquierdo
+            <br>muestran datos añadidos dinámicamente.<br>
             <br>
             <br>
 
@@ -56,13 +56,9 @@
             <br>
             <br>
             <h3><br><b>Impresoras</b></h3>
-            <br>Ahora en la pestaña de impresoras se pueden ver las impresoras generadas por la api y un símbolo al lado
-            indicando el estado en el que se encuentran.
-            <br>Al pulsar en uno de los elementos aparece un desplegable que permite ver los 5 primeros documentos que
-            tiene la impresora en la cola de
-            impresión y una etiqueta más indicando el número de documentos que faltan por mostrar.
-            <br>Además tambien aparece la información de la impresora en el panel derecho junto con los botones de
-            editar y eliminar impresora.
+            <br>Ahora en la pestaña de impresoras se puede ver el filtrado de la columna izquierda por los atributos dados.
+            <br>Además, podemos ver los grupos a los que pertenece dicha impresora y añadir o eliminarla de los grupos mostrados.
+            <br>Hemos cambiado los botones de eliminar y editar para que tenga consistencia interna.
             <br>
             <br><br><img src="img/impresoras_antiguo.png" height="400"> <img src="img/impresoras.png"
                 height="400"><br><i>Entrega anterior
@@ -71,10 +67,9 @@
             <br>
 
             <h3><b>Grupos</b></h3>
-            <br>En la pestaña de Grupos, al igual que en la de impresoras, tenemos en la lista de la izquierda los
-            elementos desplegables que
-            <br>nos muestran una previsualización de qué impresoras pertenecen al grupo seleccionado.
-            <br>Además el panel de la derecha podemos ver la información dinámica relacionada con el grupo seleccionado.
+            <br>En la pestaña de Grupos, de forma similar que en la de impresoras, tenemos dos grandes listas a la izquierda que
+            <br>muestran las impresoras que se pueden añadir y ya están añadidas al grupo seleccionado. 
+            <br>Hemos cambiado los botones de eliminar y editar para que tenga consistencia interna.
             <br><br><img src="img/grupos_antiguo.png" height="400"> <img src="img/grupos.png"
                 height="400"><br><i>Entrega anterior
                 <script>addEspacios(135)</script> Entrega actual</i><br><br>
@@ -83,10 +78,10 @@
 
             <h3><b>Diálogos emergentes</b></h3>
             <br>Por último, los dialogos emergentes de creación o modificación de elementos son funcionales.
-            <br> En los siguientes ejemplos, podemos ver como la información de los diálogos corresponde con su
-            información dinámica.
-            <br> Especialmente en el ejemplo de editar una impresora, podemos ver como por defecto en el formulario
-            aparecen los datos actuales.
+            <br> El dialogo para añadir una Nueva Impresión tiene validación implementada. 
+            El campo propietario se vuelve rojo cuando se intenta añadir una impresión sin propietario.
+            <br>El desplegable que permite elegir Impresora o Grupo al que enviar la impresión tiene opciones coloreadas 
+            en rojo para grupos sin impresoras disponibles.
             <br><br><img src="img/dialogo_editar_impresora.png" height="400">
             <img src="img/dialogo_eliminar_grupo.png" height="400">
             <br><i>Ejemplo de diálogo emergente de editar impresora</i>
@@ -97,7 +92,9 @@
             <h3><b>Tareas pendientes</b></h3>
             <br> Usando PDF.JS tenemos pendiente mostrar los pdfs que se añadan como elementos a la cola de impresión.
             <br> El filtrado de grupos, a pesar de ser similar al filtrado ya hecho de impresoras, queda pendiente.
-            <br> 
+            <br> Los botones de edición de datos tanto en grupos como en impresoras aun dan algunos errores.
+            <br> Extender la validación al resto de formularios, partiendo de la cola de impresión.
+            <br>
             <br>
             <br>
 

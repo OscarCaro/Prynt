@@ -246,6 +246,10 @@ function statusToSVG(state, desiredSize) {
 
 // Return the list of printers that belong to the given group
 function getGroupPrinters(group) {
+  console.log("groupo clickeado");
+  console.log(Pmgr.globalState.printers);
+
+
   return group.printers.map((pId) => Pmgr.globalState.printers.find((p) => p.id == pId));
 }
 
@@ -374,6 +378,10 @@ function addJob() {
   let nombre = $("#inputNewFileName").val();
   nombre = nombre.split(/(\\|\/)/g).pop();
   let propietario = $("#inputNewFileOwner").val();
+  if (propietario == ""){
+    document.getElementById("inputNewFileOwner").classList.add('placeholder-red');
+    return;
+  }
   //let impresora = $("#inputNewFilePrinter").val();
   console.log("-------------ADD JOB-------------------");
   console.log(nombre + " - " + propietario);
@@ -654,6 +662,10 @@ function updateCiDer(jobId) {
   `);
 }
 
+function eliminarImpresora(printer) {
+  Pmgr.rmPrinter(printer).then(update);
+}
+
 function updateImDer(printerId) {
 
   let printer = Pmgr.globalState.printers.find((p) => p.id == printerId);
@@ -794,7 +806,7 @@ function updateImDer(printerId) {
                                 <button type="button" class="btn btn-secondary"
                                     data-dismiss="modal">Cancelar</button>
                                 <button type="button"
-                                    class="btn btn-danger">Eliminar</button>
+                                    class="btn btn-danger" onclick="eliminarImpresora(${printer.id})">Eliminar</button>
                             </div>
                         </div>
                     </div>
@@ -922,7 +934,7 @@ function updateImDer(printerId) {
 
 
 function updateGrDer(groupId) {
-
+  
   let group = Pmgr.globalState.groups.find((g) => g.id == groupId);
 
   if (group == undefined) {       // Error message when there's no group to be displayed
@@ -1085,7 +1097,7 @@ function updateGrDer(groupId) {
                       </div>
 `);
 console.log("ee");
-console.log(getGroupPrinters(group));
+console.log(group);
 let printesGroup = getGroupPrinters(group);
 
   //console.log("Nombre del grupo de la impresora añadida: " + group.name + " " + group.id);
@@ -1213,7 +1225,12 @@ function updateCiPopUp() {
   
   let groups = Pmgr.globalState.groups;  
   for (let i = 0; i < groups.length; i++){
-    $("#ciPopUpSelect").append(` <option value="${i + printers.length}">${"Grupo: " + groups[i].name}</option> `);    
+    if (groups[i].printers.length <= 0){
+      $("#ciPopUpSelect").append(` <option class="text-danger" value="${i + printers.length}">${"Grupo: " + groups[i].name}</option> `); 
+    }
+    else {
+      $("#ciPopUpSelect").append(` <option value="${i + printers.length}">${"Grupo: " + groups[i].name}</option> `);    
+    }
   }
 
 
@@ -1387,6 +1404,7 @@ window.update = update
 window.Pmgr = Pmgr;
 window.createPrinterItem = createPrinterItem
 window.createGroupItem = createGroupItem
+window.eliminarImpresora = eliminarImpresora
 window.updateCiDer = updateCiDer
 window.updateImDer = updateImDer
 window.updateGrDer = updateGrDer
