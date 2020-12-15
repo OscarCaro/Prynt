@@ -82,7 +82,7 @@ function addImFilter() {
 
   interfaceState.imFilters.push(filter);
 
-  console.log("Filtro añadido. Tipo:" + getFilterTypeByIdx(filterTypeIdx) + " Valor: " + inputText);
+  //console.log("Filtro añadido. Tipo:" + getFilterTypeByIdx(filterTypeIdx) + " Valor: " + inputText);
   update();
 }
 
@@ -246,10 +246,6 @@ function statusToSVG(state, desiredSize) {
 
 // Return the list of printers that belong to the given group
 function getGroupPrinters(group) {
-  console.log("groupo clickeado");
-  console.log(Pmgr.globalState.printers);
-
-
   return group.printers.map((pId) => Pmgr.globalState.printers.find((p) => p.id == pId));
 }
 
@@ -257,14 +253,12 @@ function getGroupPrintersNot(group) {
   //return Pmgr.globalState.printers.map((pId) => group.printers.find((p) => p != pId.id));
   //return group.printers.map((pId) => Pmgr.globalState.printers.find((p) => p.id != pId));
   //return Pmgr.globalState.printers.filter((g) => g.printers.indexOf(printer.id) <= -1);
-  console.log("hola");
-  console.log(group);
   let todas = Pmgr.globalState.printers;
   let lasqueno = group;
-  
-  for(let i = 0; i < lasqueno.length; i++){
+
+  for (let i = 0; i < lasqueno.length; i++) {
     let id = todas.indexOf(lasqueno[i]);
-    todas.splice(id,1);
+    todas.splice(id, 1);
   }
 
   return todas;
@@ -364,38 +358,41 @@ function addPrinter() {
   let valid = true;
   if (valid) {
     Pmgr.addPrinter(o).then(update);
+    $("#dialogoNuevaImpresora").modal('toggle');
   }
+
+
+
 }
 
 function addGroup() {
   let nombre = $("#inputNewGroupName").val();
   Pmgr.addGroup({ name: nombre }).then(update);
+  $("#dialogoNuevoGrupo").modal('toggle');
 }
 
 function addJob() {
-  
-  
+
+
   let nombre = $("#inputNewFileName").val();
   nombre = nombre.split(/(\\|\/)/g).pop();
   let propietario = $("#inputNewFileOwner").val();
-  if (propietario == ""){
+  if (propietario == "") {
     document.getElementById("inputNewFileOwner").classList.add('placeholder-red');
     return;
   }
   //let impresora = $("#inputNewFilePrinter").val();
-  console.log("-------------ADD JOB-------------------");
-  console.log(nombre + " - " + propietario);
- 
+
   // Get selected printer OR first printer of selected group
   let selectIdx = $("#ciPopUpSelect").val();
   let printerId;
-  if (selectIdx < Pmgr.globalState.printers.length){
+  if (selectIdx < Pmgr.globalState.printers.length) {
     printerId = Pmgr.globalState.printers[selectIdx].id;
   }
   else {
     let group = Pmgr.globalState.groups[selectIdx - Pmgr.globalState.printers.length];
-    if (group.printers.length > 0){
-      printerId  = group.printers[0];
+    if (group.printers.length > 0) {
+      printerId = group.printers[0];
     }
     else {
       //VALIDITY error
@@ -403,8 +400,9 @@ function addJob() {
     }
   }
 
-  Pmgr.addJob({ fileName: nombre, owner: propietario, printer: printerId}).then(update);  
- 
+  Pmgr.addJob({ fileName: nombre, owner: propietario, printer: printerId }).then(update);
+  $("#dialogoNuevaImpresion").modal('toggle');
+
 }
 
 function printerIsOnGroup(printerName, groupName) {
@@ -436,10 +434,10 @@ function rmPrinterfromGroup2(groupId) {
   let currentGroup = Pmgr.globalState.groups.find((g) => g.id == groupId);
 
   let printerObject = Pmgr.globalState.printers.find((p) => p.id == interfaceState.imSelectedPrinterId);
-  
+
   let id = currentGroup.printers.indexOf(printerObject);
 
-  currentGroup.printers.splice(id,1);
+  currentGroup.printers.splice(id, 1);
 
   Pmgr.setGroup(currentGroup).then(update);
 
@@ -447,7 +445,7 @@ function rmPrinterfromGroup2(groupId) {
 
 
 function addPrintertoGroup(printerId) {
-  console.log("Boton pulsado. Id: " + printerId);
+  //console.log("Boton pulsado. Id: " + printerId);
 
   let currentGroup = Pmgr.globalState.groups.find((g) => g.id == interfaceState.grSelectedGroupId);
 
@@ -462,10 +460,10 @@ function rmPrinterfromGroup(printerId) {
   let currentGroup = Pmgr.globalState.groups.find((g) => g.id == interfaceState.grSelectedGroupId);
 
   let printerObject = Pmgr.globalState.printers.find((p) => p.id == printerId);
-  
+
   let id = currentGroup.printers.indexOf(printerObject);
 
-  currentGroup.printers.splice(id,1);
+  currentGroup.printers.splice(id, 1);
 
   Pmgr.setGroup(currentGroup).then(update);
 
@@ -610,9 +608,9 @@ function updateCiDer(jobId) {
           </div>
           <div class="row-4">
               <br><button class="btn btn-primary" type="button" data-toggle="modal"
-                  data-target="#dialogoCancelarImpresión">Cancelar impresión</button>
+                  data-target="#dialogoCancelarImpresión${job.id}">Cancelar impresión</button>
 
-              <div class="modal fade" id="dialogoCancelarImpresión" tabindex="-1"
+              <div class="modal fade" id="dialogoCancelarImpresión${job.id}" tabindex="-1"
                   role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                   <div class="modal-dialog" role="document">
                       <div class="modal-content">
@@ -635,8 +633,8 @@ function updateCiDer(jobId) {
                           <div class="modal-footer">
                               <button type="button" class="btn btn-secondary"
                                   data-dismiss="modal">Atrás</button>
-                              <button type="button" class="btn btn-danger">Cancelar
-                                  impresión</button>
+                              <button type="button" class="btn btn-danger" onclick="eliminarTrabajo(${job.id})">Cancelar
+                                  impresión </button>
                           </div>
                       </div>
                   </div>
@@ -664,6 +662,20 @@ function updateCiDer(jobId) {
 
 function eliminarImpresora(printer) {
   Pmgr.rmPrinter(printer).then(update);
+  $("#dialogoEliminarImpresora" + printer).modal('toggle');
+  
+}
+
+function eliminarGrupo(group) {
+  Pmgr.rmGroup(group).then(update);
+  $("#dialogoEliminarGrupo" + group).modal('toggle');
+
+}
+
+function eliminarTrabajo(job) {
+  Pmgr.rmJob(job).then(update);
+  $("#dialogoCancelarImpresión" + job).modal('toggle');
+
 }
 
 function updateImDer(printerId) {
@@ -699,7 +711,7 @@ function updateImDer(printerId) {
                     </svg>
                     </button>
                     <!-- icono eliminar impresora -->
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dialogoEliminarImpresora"
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dialogoEliminarImpresora${printer.id}"
                     data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar impresora">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="1 1 14 14">
                     <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
@@ -782,14 +794,14 @@ function updateImDer(printerId) {
             <div class="col">
                 <p>
 
-                <div class="modal fade" id="dialogoEliminarImpresora" tabindex="-1"
-                    role="dialog" aria-labelledby="exampleModalLabel"
+                <div class="modal fade" id="dialogoEliminarImpresora${printer.id}" tabindex="-1"
+                    role="dialog" aria-labelledby="elimImp"
                     aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">
-                                    Eliminar impresora ${printer.name}</h5>
+                                <h5 class="modal-title" id="elimImp">
+                                    Eliminar impresora ${printer.alias}</h5>
                                 <button type="button" class="close" data-dismiss="modal"
                                     aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -798,7 +810,7 @@ function updateImDer(printerId) {
                             <div class="modal-body">
                                 <form class="form-inline">
                                     <h6> ¿Estás seguro/a de que deseas eliminar la
-                                        impresora ${printer.name}? Esta acción no se puede deshacer</h6>
+                                        impresora ${printer.alias}? Esta acción no se puede deshacer</h6>
 
                                 </form>
                             </div>
@@ -851,7 +863,7 @@ function updateImDer(printerId) {
     <p></p>
 
     <div class="row-4">
-        <h3><b>Incluidas en grupos</h3>
+        <h3><b>Grupos a los que pertenece</h3>
         <div class="card">
           <div class="row scroll-panel-derecho" id="imDerGrIncl">
           
@@ -870,7 +882,7 @@ function updateImDer(printerId) {
 </div>
 `);
 
-  console.log(getPrinterGroupsNot(printer));
+  //console.log(getPrinterGroupsNot(printer));
   let listaGr = getPrinterGroups(printer);
   let listaGrNot = getPrinterGroupsNot(printer);
 
@@ -934,12 +946,12 @@ function updateImDer(printerId) {
 
 
 function updateGrDer(groupId) {
-  
+
   let group = Pmgr.globalState.groups.find((g) => g.id == groupId);
 
   if (group == undefined) {       // Error message when there's no group to be displayed
     $("#grDerDatos").html(
-      ` < b > Ningun grupo seleccionado</b > `);
+      `<b>Ningun grupo seleccionado</b>`);
     interfaceState.grSelectedGroupId = -1;
     return;
   }
@@ -965,7 +977,7 @@ function updateGrDer(groupId) {
               </svg>
               </button>
               <!-- boton eliminar grupo -->
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dialogoEliminarGrupo"
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dialogoEliminarGrupo${group.id}"
               data-bs-toggle="tooltip" data-bs-placement="top" title="Eliminar grupo">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="1 1 14 14">
               <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
@@ -1012,7 +1024,7 @@ function updateGrDer(groupId) {
             </div>
             <div class="col">
               <p>                   
-                  <div class="modal fade" id="dialogoEliminarGrupo" tabindex="-1"
+                  <div class="modal fade" id="dialogoEliminarGrupo${group.id}" tabindex="-1"
                     role="dialog" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog" role="document">
@@ -1036,7 +1048,7 @@ function updateGrDer(groupId) {
                           <button type="button" class="btn btn-secondary"
                             data-dismiss="modal">Cancelar</button>
                           <button type="button"
-                            class="btn btn-danger">Eliminar</button>
+                            class="btn btn-danger" onclick="eliminarGrupo(${group.id})">Eliminar</button>
                         </div>
                       </div>
                     </div>
@@ -1096,13 +1108,11 @@ function updateGrDer(groupId) {
     </div>
                       </div>
 `);
-console.log("ee");
-console.log(group);
-let printesGroup = getGroupPrinters(group);
+  let printesGroup = getGroupPrinters(group);
 
   //console.log("Nombre del grupo de la impresora añadida: " + group.name + " " + group.id);
   for (let i = 0; i < printesGroup.length; i++) {
-   
+
     $("#grDerImprIcluidas").append(`
      
     <div class="col-3">
@@ -1131,7 +1141,7 @@ let printesGroup = getGroupPrinters(group);
 
   let groupPrintersNot = getGroupPrintersNot(printesGroup);
   for (let i = 0; i < groupPrintersNot.length; i++) {
-      $("#grDerImprAnyadir").append(`
+    $("#grDerImprAnyadir").append(`
           
           <div class="col-3">
             <div class="card">
@@ -1155,7 +1165,7 @@ let printesGroup = getGroupPrinters(group);
           </div>
         
         `);
-    
+
   }
 }
 
@@ -1218,18 +1228,18 @@ function updateCiPopUp() {
 
   );
 
-  let printers = Pmgr.globalState.printers;  
-  for (let i = 0; i < printers.length; i++){
+  let printers = Pmgr.globalState.printers;
+  for (let i = 0; i < printers.length; i++) {
     $("#ciPopUpSelect").append(` <option value="${i}">${"Impresora: " + printers[i].alias}</option> `);
   }
-  
-  let groups = Pmgr.globalState.groups;  
-  for (let i = 0; i < groups.length; i++){
-    if (groups[i].printers.length <= 0){
-      $("#ciPopUpSelect").append(` <option class="text-danger" value="${i + printers.length}">${"Grupo: " + groups[i].name}</option> `); 
+
+  let groups = Pmgr.globalState.groups;
+  for (let i = 0; i < groups.length; i++) {
+    if (groups[i].printers.length <= 0) {
+      $("#ciPopUpSelect").append(` <option class="text-danger" value="${i + printers.length}">${"Grupo: " + groups[i].name}</option> `);
     }
     else {
-      $("#ciPopUpSelect").append(` <option value="${i + printers.length}">${"Grupo: " + groups[i].name}</option> `);    
+      $("#ciPopUpSelect").append(` <option value="${i + printers.length}">${"Grupo: " + groups[i].name}</option> `);
     }
   }
 
@@ -1380,18 +1390,17 @@ $(function () {
 
 
 
-  $("#inputNewFileName").on('change', function(){
-    var ext = $( this ).val().split('.').pop();
-    if ($( this ).val() != '') {
-      if(ext == "pdf"){
+  $("#inputNewFileName").on('change', function () {
+    var ext = $(this).val().split('.').pop();
+    if ($(this).val() != '') {
+      if (ext == "pdf") {
         alert("La extensión es: " + ext);
-        
+
         //$("#modal-gral").hide();
-        
+
       }
-      else
-      {
-        $( this ).val('');
+      else {
+        $(this).val('');
         alert("Extensión no permitida: " + ext);
       }
     }
@@ -1405,6 +1414,8 @@ window.Pmgr = Pmgr;
 window.createPrinterItem = createPrinterItem
 window.createGroupItem = createGroupItem
 window.eliminarImpresora = eliminarImpresora
+window.eliminarGrupo = eliminarGrupo
+window.eliminarTrabajo = eliminarTrabajo
 window.updateCiDer = updateCiDer
 window.updateImDer = updateImDer
 window.updateGrDer = updateGrDer
@@ -1418,3 +1429,4 @@ window.rmPrinterfromGroup2 = rmPrinterfromGroup2
 window.addGrSearchInput = addGrSearchInput
 window.addCiSearchInput = addCiSearchInput
 window.addJob = addJob
+window.populate = populate;
